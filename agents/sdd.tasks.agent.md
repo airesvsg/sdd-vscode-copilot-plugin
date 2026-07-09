@@ -1,7 +1,7 @@
 ---
 name: sdd.tasks
 description: Breaks down the technical plan into an actionable, sequential task list for implementation.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search

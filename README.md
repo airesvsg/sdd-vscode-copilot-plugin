@@ -11,7 +11,7 @@ This workflow is distributed as a VS Code Agent Plugin. You can install it direc
 1. Open Visual Studio Code.
 2. Open the *Command Palette* (`Ctrl+Shift+P` on Windows/Linux or `Cmd+Shift+P` on macOS).
 3. Type and select the command: **Chat: Install Plugin From Source**.
-4. Paste the URL of this Git repository (e.g., `https://github.com/airesvsg/sdd-vscode-copilot-plugin.git`) and press Enter.
+4. Paste the URL of this Git repository (e.g., `https://github.com/airesvsg/sdd-vscode-copilot-plugin`) and press Enter.
 
 VS Code will clone and install the plugin, activating it automatically in your chat environment. 
 
@@ -35,6 +35,7 @@ Each step is mapped to a focused subagent with restricted permissions (such as r
 *   📐 **`sdd.plan`:** Provides the "How". Combines the specification with the tech stack to create the architecture (saves to `.sdd/plans/`).
 *   ✅ **`sdd.checklist`:** Generates "unit tests for English," ensuring requirements are clear and consistent (saves to `.sdd/checklists/`).
 *   📋 **`sdd.tasks`:** Transforms the plan into a sequential task list for development (saves to `.sdd/tasks/`).
+*   🎫 **`sdd.taskstoissues`:** Converts the generated task lists into your project tracker (e.g., GitHub Issues) for execution visibility.
 *   🕵️ **`sdd.analyze`:** Cross-audits artifacts to ensure perfect alignment before coding.
 *   💻 **`sdd.implement`:** The only subagent with editing permissions and access to VS Code's integrated terminal. Strictly executes tasks, generating code and tests.
 *   🔄 **`sdd.converge`:** Evaluates the generated code against the original specification and appends any pending items as new tasks.
@@ -56,7 +57,8 @@ Manual work is minimized through **Handoffs**, interactive buttons that appear a
    *   *Requirements clarified. Ready to create the technical plan?*
    *   *Technical plan created. Generate quality checklist?*
    *   *Quality checklist created. Generate tasks?*
-   *   *Tasks generated. Run consistency analysis?*
+   *   *Tasks generated. Export to issue tracker?*
+   *   *Issues created. Run consistency analysis?*
    *   *Analysis complete. Start implementation?*
    *   *Implementation complete. Run convergence check?*
 
@@ -70,3 +72,9 @@ When our team releases new improvements for the agents, you can quickly update y
 1. Open the VS Code Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
 2. Run the command **Extensions: Check for Extension Updates**.
 VS Code will automatically pull the changes from our Git repository and update the agents in your environment.
+
+## 💡 Credits & Inspiration
+
+This plugin is heavily inspired by **[Spec Kit](https://github.com/github/spec-kit)**, an open-source toolkit created by GitHub to help developers get started with Spec-Driven Development. 
+
+While the original Spec Kit provides a CLI and works across multiple coding agents using slash commands, this plugin adapts its core philosophy (Spec → Plan → Tasks → Implement) into a fully native **VS Code Agent Plugin**. It leverages VS Code's Custom Agents and interactive Handoffs to create a seamless, UI-driven orchestration experience.

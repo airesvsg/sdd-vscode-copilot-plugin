@@ -1,7 +1,7 @@
 ---
 name: sdd.converge
 description: Assesses the codebase against the feature's artifacts and appends any remaining unbuilt work as new tasks.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search

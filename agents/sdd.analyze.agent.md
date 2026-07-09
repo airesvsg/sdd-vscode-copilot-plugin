@@ -1,7 +1,7 @@
 ---
 name: sdd.analyze
 description: Runs a cross-artifact consistency and coverage analysis before implementation.
-user-invocable: false
+user-invocable: true
 tools:
   - search
 handoffs:
