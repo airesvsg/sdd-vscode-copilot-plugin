@@ -1,7 +1,7 @@
 ---
 name: sdd.plan
 description: Creates the technical implementation plan and architecture based on the clarified specification.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search

@@ -1,7 +1,7 @@
 ---
 name: sdd.constitution
 description: Creates or updates the project's governing principles and development guidelines.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search

@@ -1,7 +1,7 @@
 ---
 name: sdd.implement
 description: Executes the task list, writing code and tests to implement the feature according to the plan.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search

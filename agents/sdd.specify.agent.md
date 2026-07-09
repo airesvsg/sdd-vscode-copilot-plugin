@@ -1,7 +1,7 @@
 ---
 name: sdd.specify
 description: Creates the functional specification in Markdown and saves it in the .sdd/specs directory.
-user-invocable: false
+user-invocable: true
 tools:
   - edit
   - search
