@@ -6,6 +6,10 @@ tools:
   - edit
   - search
 handoffs:
+  - label: "Requirements clarified. Generate Wireflow?"
+    agent: sdd.wireflow
+    prompt: "The requirements are clear. Please generate the UI wireflow and user journey."
+    send: false
   - label: "Requirements clarified. Ready to create the technical plan?"
     agent: sdd.plan
     prompt: "Based on the clarified specification, please create the technical implementation plan. My tech stack is: [Insert your tech stack here]"

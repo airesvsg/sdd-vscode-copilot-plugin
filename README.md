@@ -32,6 +32,7 @@ Each step is mapped to a focused subagent with restricted permissions (such as r
 *   🛡️ **`sdd.constitution`:** Establishes the fundamental project rules and technology preferences (saves to `.sdd/constitutions/`).
 *   📝 **`sdd.specify`:** Focuses on the "What" and "Why". Generates a requirements document with user stories (saves to `.sdd/specs/`).
 *   🔍 **`sdd.clarify`:** Analyzes the specification to identify underspecified areas and asks questions before planning.
+*   🖼️ **`sdd.wireflow`:** Generates a UI wireflow (Mermaid flows + ASCII wireframes) based on the functional specification (saves to `.sdd/wireflows/`).
 *   📐 **`sdd.plan`:** Provides the "How". Combines the specification with the tech stack to create the architecture (saves to `.sdd/plans/`).
 *   ✅ **`sdd.checklist`:** Generates "unit tests for English," ensuring requirements are clear and consistent (saves to `.sdd/checklists/`).
 *   📋 **`sdd.tasks`:** Transforms the plan into a sequential task list for development (saves to `.sdd/tasks/`).
@@ -55,6 +56,7 @@ Manual work is minimized through **Handoffs**, interactive buttons that appear a
    *   *Constitution defined. Ready to specify requirements?*
    *   *Specification created. Ready to clarify requirements?*
    *   *Requirements clarified. Ready to create the technical plan?*
+   *   *Wireflow created. Ready for technical plan?*
    *   *Technical plan created. Generate quality checklist?*
    *   *Quality checklist created. Generate tasks?*
    *   *Tasks generated. Export to issue tracker?*

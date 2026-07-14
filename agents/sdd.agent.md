@@ -9,6 +9,7 @@ agents:
   - sdd.constitution
   - sdd.specify
   - sdd.clarify
+  - sdd.wireflow
   - sdd.plan
   - sdd.checklist
   - sdd.tasks
