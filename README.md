@@ -35,6 +35,7 @@ Each step is mapped to a focused subagent with restricted permissions (such as r
 *   🖼️ **`sdd.wireflow`:** Generates a UI wireflow (Mermaid flows + ASCII wireframes) based on the functional specification (saves to `.sdd/wireflows/`).
 *   📐 **`sdd.plan`:** Provides the "How". Combines the specification with the tech stack to create the architecture (saves to `.sdd/plans/`).
 *   ✅ **`sdd.checklist`:** Generates "unit tests for English," ensuring requirements are clear and consistent (saves to `.sdd/checklists/`).
+*   🧪 **`sdd.qa-scenarios`:** Translates specifications and checklists into structured BDD/Gherkin test scenarios for QA validation (saves to `.sdd/qa-scenarios/`).
 *   📋 **`sdd.tasks`:** Transforms the plan into a sequential task list for development (saves to `.sdd/tasks/`).
 *   🎫 **`sdd.taskstoissues`:** Converts the generated task lists into your project tracker (e.g., GitHub Issues) for execution visibility.
 *   🕵️ **`sdd.analyze`:** Cross-audits artifacts to ensure perfect alignment before coding.
@@ -58,13 +59,24 @@ Manual work is minimized through **Handoffs**, interactive buttons that appear a
    *   *Requirements clarified. Ready to create the technical plan?*
    *   *Wireflow created. Ready for technical plan?*
    *   *Technical plan created. Generate quality checklist?*
-   *   *Quality checklist created. Generate tasks?*
+   *   *Quality checklist created. Generate QA scenarios?*
+   *   *QA Scenarios created. Generate tasks?*
    *   *Tasks generated. Export to issue tracker?*
    *   *Issues created. Run consistency analysis?*
    *   *Analysis complete. Start implementation?*
    *   *Implementation complete. Run convergence check?*
 
 At the end, if the `@sdd.converge` agent finds gaps and adds new tasks, click the button to run the implementation again until the feature is 100% compliant with the plan.
+
+---
+
+## 🖼️ Handling UI Designs and Mockups
+
+When building frontend features, Spec-Driven Development works best with a hybrid approach combining file-based documentation and VS Code's native Vision capabilities:
+
+1. **Document (The SDD Way):** Save your UI mockups or screenshots in a dedicated directory, such as `.sdd/ui/0001-feature-name-ui.png`. This keeps visual assets version-controlled and tied to your feature specification.
+2. **Reference:** Link the image inside your Markdown specification or wireflow files (e.g., `![UI Mockup](../../.sdd/ui/0001-feature-name-ui.png)`).
+3. **Attach in Chat (Vision):** LLMs cannot automatically "see" local images just by reading a file path. When you invoke `@sdd.specify` to write user stories, or `@sdd.implement` to write code, **drag and drop the image directly into the VS Code chat box**. This leverages the Vision feature, allowing the agent to analyze the layout, colors, and structure instantly while recording the reference in your SDD artifacts.
 
 ---
 

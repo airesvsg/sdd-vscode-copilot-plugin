@@ -1,119 +1,75 @@
-# Practical Example: Building "Taskify" with Spec-Driven Development (SDD)
+# Practical Example: Starting a New Project from Scratch (Greenfield)
 
-This document demonstrates an end-to-end flow in the VS Code chat using our SDD agent plugin. The goal is to build **Taskify**, a team productivity platform.
+In a new project (0-to-1 Development), you have a blank canvas. While it's tempting to jump straight into coding, doing so with AI often leads to inconsistent architectures and hallucinated tech stacks. 
 
-The process requires you to use the *Handoff* buttons suggested by Copilot at the end of each step to maintain a fluid context, seamlessly transitioning information between the expert subagents.
+Spec-Driven Development (SDD) prevents this by forcing you to define the "What" and the "How" before any code is generated. This example demonstrates how to build a **"Photo Gallery App"** from scratch using our complete AI agent pipeline, ensuring a robust, scalable foundation.
 
 ---
 
-## Step 1: Establishing the Constitution (Project Rules)
-**Action:** Open the VS Code chat and start the project by invoking the main orchestrator and defining the base rules.
+## Step 1: Establishing the Foundation (The Constitution)
+Since this is a blank repository, the Orchestrator needs to know your technological preferences and architectural rules. These rules will govern every AI agent in the pipeline.
 
-**You type in the chat:**
-> `@sdd Let's start the Taskify project. Define the project constitution. Our principles are: mobile-first, accessibility first, and test-driven development (TDD). The tech stack will be React, Node.js, and PostgreSQL.`
+**Action:** Open the VS Code Chat and invoke the orchestrator to set up the project rules.
+> `@sdd Let's start a new project. Our stack is Next.js, TypeScript, and TailwindCSS. We strictly follow functional programming, use React Server Components where possible, and mandate Test-Driven Development (TDD) with Jest.`
 
-**What the agent does:**
-The orchestrator delegates this to the `@sdd.constitution` subagent. It uses the edit tool to create the `.sdd/constitutions/constitution.md` file containing these rules. Once finished, it suggests the handoff button:
+**What happens:** The Orchestrator delegates to `@sdd.constitution`, which saves these rules in `.sdd/constitutions/constitution.md`. From now on, no agent will suggest using Python or Vue.js, as the stack is strictly locked.
 👉 *(Button)* **Constitution defined. Ready to specify requirements?**
 
----
+## Step 2: Visual & Functional Specification (Vision Capabilities)
+Now we define what the application actually does. We will use VS Code's native Vision feature to let the AI see our UI wireframe.
 
-## Step 2: Creating the Functional Specification (What and Why)
-**Action:** Click the suggested handoff button. This will call the `@sdd.specify` subagent. You just need to complete the prompt with your business requirements.
+**Action:** Click the handoff. **Drag and drop your UI mockup image** (e.g., a sketch of a photo grid with a sidebar) into the VS Code chat and type:
+> `@sdd.specify Please use the attached mockup to write the functional specification and user stories for the "Photo Gallery" core feature. Users should be able to upload, tag, and view photos in a grid. Save the UI reference to the .sdd/ui/ folder.`
 
-**You complete the prompt in the chat:**
-> `@sdd.specify I want to define the functional specification and user stories. Here is what I want to build: An app called Taskify. It should allow users to create Kanban boards, add tasks with titles and descriptions, and move these tasks between columns (To Do, In Progress, Done).`
-
-**What the agent does:**
-It analyzes the requirements and creates the `.sdd/specs/0001-taskify-kanban-board.md` file containing the user stories. Once finished, it suggests the handoff:
+**What happens:** `@sdd.specify` analyzes the image, identifies the interactive elements (upload buttons, image grid, tags), writes the exact Acceptance Criteria in `.sdd/specs/`, and creates the local UI reference link.
 👉 *(Button)* **Specification created. Ready to clarify requirements?**
 
----
+## Step 3: Refinement (Preventing Hallucinations)
+Even with a mockup, requirements can be ambiguous. The clarification phase forces the AI to ask you about edge cases before it plans the database.
 
-## Step 3: Refinement and Disambiguation
-**Action:** Click the handoff button to call `@sdd.clarify`. NEVER skip this step for real projects.
+**Action:** Click the handoff to trigger `@sdd.clarify`. 
+*Agent asks:* "What is the maximum file size for a photo upload? And should tags be pre-defined or user-generated?"
+*You reply:* "Max size is 5MB. Tags are user-generated, but should be converted to lowercase automatically."
+👉 *(Button)* **Requirements clarified. Generate Wireflow?**
 
-**You click the button (the prompt is sent automatically):**
-> `@sdd.clarify Please read the newly created specification and raise questions about ambiguities, edge cases...`
+## Step 4: Visualizing the Navigation
+**Action:** Click the handoff. `@sdd.wireflow` reads the spec and generates a Mermaid.js navigation diagram (e.g., Home -> Upload Modal -> Success State) and ASCII layouts in `.sdd/wireflows/`. This gives the upcoming planning agent a clear view of the routing structure.
+👉 *(Button)* **Wireflow created. Ready for technical plan?**
 
-**What the agent does:**
-It reads the specification located in `.sdd/specs/` and asks questions in the chat (e.g., *"What happens if the user tries to move a task to a column that doesn't exist?"* or *"Will there be a character limit on the task title?"*).
+## Step 5: Architectural Planning
+**Action:** Click the handoff for `@sdd.plan`.
+> `@sdd.plan Based on the clarified spec, create the technical architecture.`
 
-**You reply in the chat:**
-> `1. Columns are fixed, no new ones can be created right now. 2. The title limit is 100 characters.`
+**What happens:** The agent writes the `.sdd/plans/` document. Because it read the Constitution in Step 1, it correctly plans a Next.js Server Action for the upload endpoint and defines a generic `PhotoCard` React component using TailwindCSS.
 
-It will update the specification (`.sdd/specs/0001-taskify-kanban-board.md`) by appending a `## Clarifications` section and then suggest the handoff:
-👉 *(Button)* **Requirements clarified. Ready to create the technical plan?**
+## Step 6: Quality Gates (Checklists & Scenarios)
+**Action:** Click the handoffs sequentially to build your testing foundation:
+*   `@sdd.checklist` generates the "unit tests for English" (verifying if the spec has any logical holes).
+*   `@sdd.qa-scenarios` writes the BDD/Gherkin test cases (e.g., *Given the user uploads a 6MB file, Then the system shows an error*).
+👉 *(Button)* **QA Scenarios created. Generate tasks?**
 
----
+## Step 7: Task Breakdown & GitHub Tracking
+**Action:** Click the handoff for `@sdd.tasks`. Because our Constitution mandated TDD, the agent orders the tasks strictly: "Write Jest tests for upload logic" comes *before* "Implement upload logic".
+👉 *(Button)* **Tasks generated. Export to issue tracker?**
 
-## Step 4: Technical Planning (The How)
-**Action:** Click the handoff button to trigger `@sdd.plan`. You must confirm your technology stack.
+**Action:** Click the handoff. `@sdd.taskstoissues` leverages the `#tool:github/create_issue` MCP server to push these generated tasks into your team's live GitHub repository.
+👉 *(Button)* **Issues created. Run consistency analysis?**
 
-**You complete the prompt in the chat:**
-> `@sdd.plan Based on the clarified specification, please create the technical implementation plan. My tech stack is: React (Frontend), Node.js/Express (Backend), and PostgreSQL (Database).`
+## Step 8: Initial Implementation
+**Action:** Run `@sdd.analyze` to confirm everything is perfectly aligned. Then start coding:
+> `@sdd.implement The artifacts are consistent. Please execute the tasks to build the Photo Gallery.`
 
-**What the agent does:**
-It cross-references the specification with the constitution and your chosen tech stack to generate the architecture. It creates the `.sdd/plans/0001-taskify-kanban-board-plan.md` file and suggests:
-👉 *(Button)* **Technical plan created. Generate quality checklist?**
-
----
-
-## Step 5: Generating the Quality Checklist
-**Action:** Click the handoff button. This calls `@sdd.checklist` to create your validation criteria.
-
-**You click the button (the prompt is sent automatically):**
-> `@sdd.checklist Based on the specification and the technical plan just created, please generate a comprehensive quality and validation checklist.`
-
-**What the agent does:**
-It creates the `.sdd/checklists/0001-taskify-kanban-board-checklist.md` file, which contains rigorous test scenarios and acceptance criteria based on both the plan and the specification.
-👉 *(Button)* **Quality checklist created. Generate tasks?**
-
----
-
-## Step 6: Actionable Task Breakdown
-**Action:** Click the handoff button to call `@sdd.tasks`, which will create the execution roadmap.
-
-**You click the button (the prompt is sent automatically):**
-> `@sdd.tasks Using the technical plan and the quality checklist, please generate an actionable, sequential task list for implementation.`
-
-**What the agent does:**
-It creates the `.sdd/tasks/0001-taskify-kanban-board-tasks.md` file, outlining the exact sequence of implementation (e.g., 1. Database models, 2. API endpoints, 3. UI Components).
-👉 *(Button)* **Tasks generated. Run consistency analysis?**
-
----
-
-## Step 7: Consistency Analysis (Audit)
-**Action:** Click the handoff button. `@sdd.analyze` will perform a cross-artifact safety check before any code is written.
-
-**You click the button (the prompt is sent automatically):**
-> `@sdd.analyze Please run a cross-artifact consistency analysis to ensure the specs, plans, checklists, and tasks align perfectly...`
-
-**What the agent does:**
-It reads the files across all directories (`.sdd/constitutions/`, `.sdd/specs/`, `.sdd/plans/`, `.sdd/checklists/`, and `.sdd/tasks/`) without modifying them. It outputs a report in the chat notifying you if any dependencies were missed (e.g., *"All clear! The tasks cover 100% of the specification and respect the TDD approach required in the constitution."*).
-👉 *(Button)* **Analysis complete. Start implementation?**
-
----
-
-## Step 8: Implementation (Hands-on)
-**Action:** It's time to write code! Click the handoff to trigger `@sdd.implement`.
-
-**You click the button (the prompt is sent automatically):**
-> `@sdd.implement The artifacts are consistent and aligned. Please begin executing the tasks sequentially...`
-
-**What the agent does:**
-It will now use real tools (`edit` and `terminal`). It reads the `.sdd/tasks/0001-taskify-kanban-board-tasks.md` file and follows the tasks strictly: it will create the test files first (since TDD was required in the constitution), then the API code, and finally the React components. It will execute actual edits within your project. Once it finishes these steps, it suggests:
+**What happens:** The agent uses its terminal to install Next.js, creates the folder structure, writes the tests, and implements the code.
 👉 *(Button)* **Implementation complete. Run convergence check?**
 
----
+## Step 9: The Convergence Loop (The SDD Safety Net)
+Even in a greenfield project, the AI might miss a detail during its first implementation pass (e.g., it built the upload logic but forgot the lowercase conversion for tags).
 
-## Step 9: Review and Convergence
-**Action:** After the coding phase, ensure no requirements were left behind by triggering `@sdd.converge`.
+**Action:** Click the handoff to run the convergence check.
+> `@sdd.converge Please assess the codebase against our spec and plan to verify if all planned work is complete.`
 
-**You click the button (the prompt is sent automatically):**
-> `@sdd.converge Please assess the current codebase against the feature's artifacts...`
+**What happens:** 
+The `@sdd.converge` agent acts as your auditor. It cross-references the generated code with your `.sdd/specs/` and `.sdd/plans/`. 
+If it realizes the tag lowercasing logic or the 5MB file limit validation was forgotten, **it will automatically append those missing items as new tasks to your `.sdd/tasks/` file**.
 
-**What the agent does:**
-It compares the actual code generated in your project against the acceptance criteria and checklists.
-- **Scenario A:** If something is missing (e.g., error handling when deleting a task), it edits the `.sdd/tasks/0001-taskify-kanban-board-tasks.md` file to append the missing tasks and suggests a handoff button to route back to `@sdd.implement`.
-- **Scenario B:** If everything perfectly aligns, it declares convergence has been achieved: *"Convergence Achieved. The feature is complete and ready for delivery."*
+If the command appends new tasks, simply click the handoff to run `@sdd.implement` again to execute those specific fixes. Repeat the `@sdd.converge` step until the agent reports that the feature has fully converged and matches the specification 100%.
