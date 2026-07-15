@@ -6,6 +6,10 @@ tools:
   - edit
   - search
 handoffs:
+  - label: "Quality checklist created. Generate QA scenarios?"
+    agent: sdd.qa-scenarios
+    prompt: "The checklist is ready. Please generate BDD test scenarios for the QA team based on the spec and checklist."
+    send: false
   - label: "Quality checklist created. Generate tasks?"
     agent: sdd.tasks
     prompt: "Using the technical plan and the quality checklist, please generate an actionable, sequential task list for implementation."

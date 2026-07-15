@@ -1,115 +1,76 @@
-# Practical Example: Adding a New Feature to an Existing Project (Brownfield)
+# Practical Example: Adding a Feature to an Existing Project (Brownfield)
 
-In existing projects, Spec-Driven Development focuses on "Iterative Enhancement". The key to success here is ensuring that the AI agents read the current codebase and respect the existing architecture before planning and coding.
+In legacy or existing projects, context is everything. The key to success in Spec-Driven Development (SDD) is using "Context Engineering" — deliberately feeding the AI information about your current architecture before writing new code. By leveraging VS Code's native variables like `#codebase` and `#file`, you ensure the agents hook into the current architecture without reinventing the wheel or breaking existing patterns.
 
-In this example, we will add a **"Comment System"** to our existing Taskify app.
+In this highly detailed example, we will add a **"Comment System"** to an existing Kanban board application (Taskify).
 
 ---
 
-## Step 1: Contextualization and Constitution (Update)
-**Action:** If your project already has a constitution at `.sdd/constitutions/constitution.md`, you can skip this step. If not, you need to create it by asking the agent to read your current project.
+## Step 1: Reverse Engineering the Constitution (Context Engineering)
+Before building, we need the Orchestrator to understand our legacy rules. In existing projects, the Constitution acts as a strict guardrail to prevent the AI from introducing foreign libraries or conflicting architectural patterns.
 
-**You type in the chat (using the `#codebase` or `#workspace` context variable):**
-> `@sdd This is an existing project. Please analyze my #codebase and create the project constitution. Maintain the current architectural patterns (React on the frontend, Node.js on the backend). Add the rule: "Always reuse existing UI components instead of creating new ones."`
+**Action:** Open the VS Code Chat and invoke the orchestrator, forcing it to scan the current state of the project.
+> `@sdd Please analyze my #codebase and create the project constitution. Maintain the current architectural patterns. Crucial rule: Always reuse existing UI components from our design system (like the Button and Modal components in #file:src/components/ui) instead of creating new ones. We use Prisma for the DB and Tailwind for styling.`
 
-**What the agent does:**
-It generates the constitution based on your current code and suggests the handoff:
+**What happens:** The agent scans your workspace and creates `.sdd/constitutions/constitution.md`. It formally records your existing tech stack, UI library, and database ORM as immutable rules for all subsequent subagents.
 👉 *(Button)* **Constitution defined. Ready to specify requirements?**
 
----
+## Step 2: Specification with Vision Capabilities
+We want to add a comment section to the existing Task Modal. Instead of just describing it, we will show the AI what the current modal looks like.
 
-## Step 2: Specifying the New Feature
-**Action:** Click the suggested handoff button. It is time to focus on the "What" and "Why" of the new feature, without focusing on the tech stack.
+**Action:** Click the handoff. **Drag and drop a screenshot** of the current Task Modal into the VS Code chat (leveraging the Vision feature) and type:
+> `@sdd.specify I want to add a comment system for Kanban tasks. I'm attaching a screenshot of our current Task Modal with my sketch of the new comment timeline at the bottom. Please write the user stories and acceptance criteria. Save the UI reference in the .sdd/ui/ folder.`
 
-**You complete the prompt in the chat:**
-> `@sdd.specify I want to define the functional specification and user stories. Here is what I want to build: A comment system for Kanban tasks. Users should be able to open an existing task, type a comment of up to 500 characters, see the comment's date/time, and see who wrote it.`
-
-**What the agent does:**
-It creates the `.sdd/specs/0002-task-comments-system.md` file (assuming `0001` was the initial creation of the app).
+**What happens:** The agent analyzes the layout, identifies where the new comments fit into the legacy UI, writes the spec in `.sdd/specs/`, and creates the image reference link.
 👉 *(Button)* **Specification created. Ready to clarify requirements?**
 
----
+## Step 3: Refinement Against Legacy Code
+In an existing project, new features must map to existing database tables and models. The clarification phase is where we bridge the gap between the new spec and the old schema.
 
-## Step 3: Refinement (Crucial for Existing Projects)
-**Action:** For legacy or existing codebases, always click this handoff. `@sdd.clarify` will ask vital questions about how the new feature integrates with what already exists.
+**Action:** Click the handoff for `@sdd.clarify`. 
+*Agent asks:* "Does the system already have a concept of a `User` to attribute these comments to, and where is the `Task` stored?"
+*You reply:* "Yes, we have an existing `User` and `Task` table. Please review the schema in `#file:prisma/schema.prisma` and ensure the new `Comment` model establishes relations with them."
+👉 *(Button)* **Requirements clarified. Generate Wireflow?**
 
-**You click the button:**
-> `@sdd.clarify Please read the newly created specification and raise questions...`
+## Step 4: Visual & State Mapping
+**Action:** Click the handoff. `@sdd.wireflow` generates Mermaid.js diagrams mapping how the user interacts with the legacy Task Modal to post a comment, generating ASCII representations of the UI states in `.sdd/wireflows/`.
+👉 *(Button)* **Wireflow created. Ready for technical plan?**
 
-**The agent might ask:**
-*"How will we link the comment's author? Is there already a user authentication system and a `users` table in the current database?"*
+## Step 5: Legacy-Focused Architectural Planning
+This is the most critical phase for Brownfield projects. The technical plan must explicitly detail how existing files will be modified.
 
-**You reply in the chat:**
-> `Yes, we already have a 'users' table in the database and an authentication context on the frontend (useAuth). Comments cannot be edited, only deleted by their own author.`
+**Action:** Click the handoff for `@sdd.plan`.
+> `@sdd.plan Create the technical plan. IMPORTANT: Review our `#codebase` to integrate the new comments table with the existing Prisma schema. The plan must list exactly which existing React components (e.g., `#file:src/components/TaskModal.tsx`) will be modified.`
 
-It updates the spec with your answers and suggests:
-👉 *(Button)* **Requirements clarified. Ready to create the technical plan?**
+**What happens:** The agent writes the `.sdd/plans/` document, detailing the exact diffs and dependency injection required to add comments without breaking the existing Kanban drag-and-drop features.
 
----
+## Step 6: Quality Gates & Regression Protection
+**Action:** Click the handoffs sequentially to generate quality control documents:
+*   `@sdd.checklist` generates the acceptance checklist, specifically adding regression checks (e.g., "Verify that adding a comment does not prevent the task from changing columns").
+*   `@sdd.qa-scenarios` writes the BDD/Gherkin tests for the QA team, factoring in existing test utilities.
+👉 *(Button)* **QA Scenarios created. Generate tasks?**
 
-## Step 4: Legacy-Focused Technical Planning
-**Action:** Click the handoff button. **Attention here:** you must instruct `@sdd.plan` to verify the local code so it doesn't duplicate what already exists.
+## Step 7: Task Breakdown & GitHub Tracking
+**Action:** Click the handoff for `@sdd.tasks`. It creates a step-by-step TDD sequence, carefully separating "Modify existing Schema" from "Update existing UI".
+👉 *(Button)* **Tasks generated. Export to issue tracker?**
 
-**You complete the prompt in the chat:**
-> `@sdd.plan Based on the clarified specification, please create the technical implementation plan. My tech stack is: React and Node.js. IMPORTANT: Review our current database models and existing UI components to integrate them with the new comments table.`
-
-**What the agent does:**
-It reads the specification and the project's code, creating `.sdd/plans/0002-task-comments-system-plan.md` focused on how to connect the new feature to the existing architecture.
-👉 *(Button)* **Technical plan created. Generate quality checklist?**
-
----
-
-## Step 5: Generating the Quality Checklist
-**Action:** Click the handoff button.
-> `@sdd.checklist Based on the specification and the technical plan just created, please generate a comprehensive quality and validation checklist.`
-
-**What the agent does:**
-Generates `.sdd/checklists/0002-task-comments-system-checklist.md` containing regression tests (to ensure adding comments didn't break the existing Kanban board) and acceptance criteria.
-👉 *(Button)* **Quality checklist created. Generate tasks?**
-
----
-
-## Step 6: Actionable Task Breakdown
-**Action:** Click the handoff button.
-> `@sdd.tasks Using the technical plan and the quality checklist, please generate an actionable, sequential task list for implementation.`
-
-**What the agent does:**
-Generates `.sdd/tasks/0002-task-comments-system-tasks.md`. Tasks will include steps like "Modify existing routes" or "Update the `TaskModal.tsx` component", directly handling the real codebase.
-👉 *(Button)* **Tasks generated. Run consistency analysis?**
-
----
-
-## Step 7: Consistency Analysis
-**Action:** Click the handoff button.
-> `@sdd.analyze Please run a cross-artifact consistency analysis...`
-
-**What the agent does:**
-Checks for gaps (e.g., verifying if the plan included the foreign key to the existing `users` table that we agreed on during the Clarify step).
-👉 *(Button)* **Analysis complete. Start implementation?**
-
----
+**Action:** Click the handoff. `@sdd.taskstoissues` uses the `#tool:github/create_issue` MCP server to push these granular tasks into your team's live Jira/GitHub board so product managers have full visibility.
+👉 *(Button)* **Issues created. Run consistency analysis?**
 
 ## Step 8: Safe Implementation
-**Action:** Click the handoff to trigger `@sdd.implement`.
+**Action:** Run `@sdd.analyze` to cross-audit the plan against the legacy files. Once approved, start coding:
+> `@sdd.implement The artifacts are consistent. Please execute the tasks. Use caution when applying diffs to our existing files like `#file:src/components/TaskModal.tsx`.`
 
-**You click the button:**
-> `@sdd.implement The artifacts are consistent and aligned. Please begin executing the tasks sequentially...`
-
-**What the agent does:**
-It will execute the code. Because it is an existing project, it will read legacy files (like your `TaskModal.tsx`), apply diffs, and run `npm install` in the terminal if any new library was planned.
+**What happens:** The agent uses its terminal and file editing tools to safely modify your legacy files. 
 👉 *(Button)* **Implementation complete. Run convergence check?**
 
----
+## Step 9: The Convergence Loop (The SDD Safety Net)
+In legacy codebases, the first implementation pass almost never catches 100% of the required integrations. The `@sdd.converge` agent acts as your ultimate quality gate. It assesses the current codebase against the feature's specifications, plans, and tasks to ensure no planned work was left behind [1, 2].
 
-## Step 9: Review and Convergence
-**Action:** Click the handoff button.
-> `@sdd.converge Please assess the current codebase against the feature's artifacts...`
+**Action:** Click the handoff to run the convergence check.
+> `@sdd.converge Please assess the codebase against our spec and plan to verify if all planned work is complete.`
 
-**What the agent does:**
-It verifies the newly made code edits. It might notice, for example, that the Kanban modal visually breaks when loading too many comments. If anything is pending, it will edit `.sdd/tasks/0002-task-comments-system-tasks.md` by adding fine-tuning tasks and will suggest running the implementation once more.
+**What happens:** 
+If the agent finds that the new comment system caused the legacy modal to lose its maximum height property, or missed a database migration, **it will automatically append a bug-fix or missing task to your `.sdd/tasks/` file** [2].
 
----
-
-### Extra Tips for Existing Projects:
-* **Context is King:** AI tools in existing codebases often fail when reinventing the wheel. If the agent tries to create a new button, warn it in the Planning step (Technical Plan) to use the existing button component from your local Design System.
-* **Context Engineering:** Maintain files like `ARCHITECTURE.md` or rules in `.github/copilot-instructions.md` at the root of your project. The agents will read these files automatically to make better architectural and implementation decisions.
+If the command appends new tasks, you must click the handoff to run `@sdd.implement` again to execute those specific fixes, and then repeat the `@sdd.converge` step [2, 3]. You loop through these two agents until `@sdd.converge` reports that the feature is fully complete and perfectly aligned with the specification [2].

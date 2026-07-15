@@ -12,6 +12,7 @@ agents:
   - sdd.wireflow
   - sdd.plan
   - sdd.checklist
+  - sdd.qa-scenarios
   - sdd.tasks
   - sdd.taskstoissues
   - sdd.analyze
