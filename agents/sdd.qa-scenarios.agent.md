@@ -1,7 +1,7 @@
 ---
 name: sdd.qa-scenarios
 description: Generates QA test scenarios (BDD/Gherkin) based on the specification and quality checklist.
-user-invocable: true
+user-invocable: false
 tools:
   - search
   - edit

@@ -1,7 +1,7 @@
 ---
 name: sdd.clarify
 description: Clarifies underspecified areas, edge cases, and ambiguities in the functional specification.
-user-invocable: true
+user-invocable: false
 tools:
   - edit
   - search

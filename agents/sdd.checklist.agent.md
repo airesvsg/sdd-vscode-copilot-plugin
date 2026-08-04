@@ -1,7 +1,7 @@
 ---
 name: sdd.checklist
 description: Generates custom quality checklists that validate requirements completeness, clarity, and consistency.
-user-invocable: true
+user-invocable: false
 tools:
   - edit
   - search
