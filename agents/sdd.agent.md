@@ -1,8 +1,9 @@
 ---
 name: sdd
 description: Spec-Driven Development Orchestrator
-argument-hint: "Describe what you want to build (e.g., 'I want to build a Kanban board...') "
+argument-hint: "Describe what you want to build or the project you want to start."
 user-invocable: true
+disable-model-invocation: true
 tools:
   - agent
 agents:
