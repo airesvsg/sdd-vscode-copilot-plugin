@@ -1,7 +1,7 @@
 ---
 name: sdd.taskstoissues
 description: Converts the generated task lists into GitHub issues for tracking and execution.
-user-invocable: true
+user-invocable: false
 tools:
   - search
   - terminal

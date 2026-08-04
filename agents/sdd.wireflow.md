@@ -1,7 +1,7 @@
 ---
 name: sdd.wireflow
 description: Generates a UI wireflow (Mermaid flows + ASCII wireframes) based on the functional specification.
-user-invocable: true
+user-invocable: false
 tools:
   - search
   - edit
