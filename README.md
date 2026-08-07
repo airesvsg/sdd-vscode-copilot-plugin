@@ -1,72 +1,74 @@
 # Spec-Driven Development (SDD) Agent Plugin for VS Code
 
-This plugin brings the **Spec-Driven Development (SDD)** methodology natively to the Visual Studio Code chat. It utilizes the native **Agent Plugins (Preview)** feature to orchestrate specification-driven software development.
+Build high-quality software by making **specifications the primary, executable artifact** of your development lifecycle. Inspired by the [Spec Kit](https://github.com/github/spec-kit) methodology, this plugin transforms Visual Studio Code into a guided SDD pipeline where AI agents handle requirements, planning, and implementation with strict architectural discipline.
 
-Spec-Driven Development inverts the traditional process: instead of jumping straight into code, **specifications become the primary, executable artifact**. You define "what" to build, refine the requirements through structured phases, and allow the AI agent in VS Code to implement the solution.
+## 📝 Summary
 
-## 🚀 How to Install the Plugin
+The **SDD Agent Plugin** is a comprehensive orchestration framework that replaces "vibe coding" with a structured, step-by-step process. By using a single lead orchestrator (`@sdd`) and a team of internal expert subagents, it ensures that every line of code is anchored to a verified functional requirement.
 
-This workflow is distributed as a VS Code Agent Plugin. You can install it directly from this Git repository URL:
+## 🌟 Key Highlights
+*   **Orchestrated Workflow:** Interact only with the lead agent `@sdd`. It delegates tasks to specialized subagents (Product Manager, Architect, QA, Implementer) that are hidden from the main menu to reduce clutter.
+*   **Vision-Powered Specs:** Drag and drop UI mockups directly into the chat. The agents analyze visual layouts to extract precise acceptance criteria.
+*   **Permanent Traceability:** Every file modified by the plugin includes a mandatory header log linking the code to its governing specifications.
+*   **Safety & Quality Gates:** Built-in loops for requirements clarification, BDD test scenario generation, and a final "Convergence" check to ensure implementation matches intent 100%.
 
-1. Open Visual Studio Code.
-2. Open the *Command Palette* (`Ctrl+Shift+P` on Windows/Linux or `Cmd+Shift+P` on macOS).
-3. Type and select the command: **Chat: Install Plugin From Source**.
-4. Paste the URL of this Git repository (e.g., `https://github.com/airesvsg/sdd-vscode-copilot-plugin`) and press Enter.
+## 🛣️ The SDD Lifecycle
 
-VS Code will clone and install the plugin, activating it automatically in your chat environment. 
+The plugin guides you through a sequential flow using **Native Handoffs**. You simply follow the buttons provided by the agents:
 
-> **Note:** Make sure the `chat.plugins.enabled` setting is set to `true` in your VS Code, as this is a Preview feature.
+1.  **Constitution:** Define the "immutable" tech stack and architectural rules.
+2.  **Specify:** Define the "What" and "Why" (User Stories & Acceptance Criteria).
+3.  **Clarify:** Identify and resolve ambiguities before any planning starts.
+4.  **Wireflow:** Visualize navigation and UI states.
+5.  **Plan:** Design the technical architecture and database schemas.
+6.  **Checklist:** Generate a "Definition of Done" for the requirements.
+7.  **QA Scenarios:** Translate requirements into BDD/Gherkin test cases.
+8.  **Tasks:** Break the plan into a sequential, TDD-focused task list.
+9.  **Implement:** Autonomous code generation with terminal execution and file editing.
+10. **Converge:** The ultimate audit. Compares code against specs and generates fix-up tasks for any gaps.
 
----
+## 🤖 The Expert Subagents (Internal)
 
-## 🏗️ Agent Architecture
+These agents are orchestrated by `@sdd` and are not directly invocable by users to maintain process integrity:
 
-The workflow uses an "Orchestrator and Experts" pattern. Navigation between phases is guided by **Handoffs**, which allow a seamless transition in the VS Code chat from one specialized agent to another with a single click and a pre-filled prompt.
+*   📜 **`sdd.constitution`:** Establishes the foundation in `.sdd/constitutions/`.
+*   🎯 **`sdd.specify`:** Analyzes Vision mockups and writes specs in `.sdd/specs/`.
+*   🔍 **`sdd.clarify`:** Acts as a Senior BA to quiz the user on edge cases.
+*   📐 **`sdd.plan`:** Creates the technical blueprint in `.sdd/plans/`.
+*   🧪 **`sdd.qa-scenarios`:** Writes BDD tests in `.sdd/qa-scenarios/`.
+*   ⚙️ **`sdd.implement`:** Executes tasks and maintains file traceability.
+*   🏁 **`sdd.converge`:** The "Safety Net" that loops implementation until the feature is complete.
 
-### The Coordinating Agent: `@sdd`
-The main agent and the only one directly invocable by the user. It acts as the Orchestration Lead, guiding the user through the project lifecycle and delegating work to the appropriate subagents via the `agents` property in the frontmatter. **The coordinator never writes code; its function is to manage the workflow.**
+## 🚀 Practical Examples
 
-### The Expert Subagents
-Each step is mapped to a focused subagent with restricted permissions (such as read-only access) operating behind the scenes:
+### 1. Greenfield Project (Starting from Scratch)
+*   **Step 1:** `@sdd Let's start a new project. Stack: Next.js, TypeScript, Tailwind.`
+*   **Step 2:** Drag your UI sketch into chat: `@sdd Specify this "Photo Gallery" feature using the attached image.`
+*   **Step 3:** Follow the **Handoff Buttons** through Planning, QA, and Implementation.
+*   **Step 4:** Run the **Convergence Check** to ensure the AI didn't miss specific logic like image size limits.
 
-*   🛡️ **`sdd.constitution`:** Establishes the fundamental project rules and technology preferences (saves to `.sdd/constitutions/`).
-*   📝 **`sdd.specify`:** Focuses on the "What" and "Why". Generates a requirements document with user stories (saves to `.sdd/specs/`).
-*   🔍 **`sdd.clarify`:** Analyzes the specification to identify underspecified areas and asks questions before planning.
-*   🖼️ **`sdd.wireflow`:** Generates a UI wireflow (Mermaid flows + ASCII wireframes) based on the functional specification (saves to `.sdd/wireflows/`).
-*   📐 **`sdd.plan`:** Provides the "How". Combines the specification with the tech stack to create the architecture (saves to `.sdd/plans/`).
-*   ✅ **`sdd.checklist`:** Generates "unit tests for English," ensuring requirements are clear and consistent (saves to `.sdd/checklists/`).
-*   🧪 **`sdd.qa-scenarios`:** Translates specifications and checklists into structured BDD/Gherkin test scenarios for QA validation (saves to `.sdd/qa-scenarios/`).
-*   📋 **`sdd.tasks`:** Transforms the plan into a sequential task list for development (saves to `.sdd/tasks/`).
-*   🎫 **`sdd.taskstoissues`:** Converts the generated task lists into your project tracker (e.g., GitHub Issues) for execution visibility.
-*   🕵️ **`sdd.analyze`:** Cross-audits artifacts to ensure perfect alignment before coding.
-*   💻 **`sdd.implement`:** The only subagent with editing permissions and access to VS Code's integrated terminal. Strictly executes tasks, generating code and tests.
-*   🔄 **`sdd.converge`:** Evaluates the generated code against the original specification and appends any pending items as new tasks.
+### 2. Brownfield Project (Existing Codebase)
+*   **Step 1:** `@sdd Analyze my #codebase and create a constitution based on our existing patterns.`
+*   **Step 2:** Provide context: `@sdd Specify a new "Comment System" for our Kanban board. See #file:src/db/schema.prisma for reference.`
+*   **Step 3:** The `sdd.plan` agent will specifically look at your current files to avoid duplicating code.
+*   **Step 4:** Implementation will use **Traceability Headers** to log which spec updated which legacy file.
 
----
+## 🔗 Traceability & Maintenance
 
-## 🎯 How to Use the Workflow
+To ensure the level of maturity required for professional SDD, the `sdd.implement` agent follows a strict **File Header Rule**. Every file created or modified will contain or append to this block:
 
-Manual work is minimized through **Handoffs**, interactive buttons that appear at the end of each response, transferring context to the next agent in VS Code.
-
-1. **Open the VS Code Chat** and call the coordinating agent with `@sdd`.
-2. **Define the Constitution (If it is a new project):**
-   `@sdd Let's establish the project rules. We use TypeScript, Next.js, functional approaches, and testing with Jest.`
-3. **Start the Specification:**
-   `@sdd I want to create an app to organize my photos into albums by date.`
-4. **Follow the Handoffs:** The chat will suggest transition buttons to create guided sequential workflows. Just click them to advance:
-   *   *Constitution defined. Ready to specify requirements?*
-   *   *Specification created. Ready to clarify requirements?*
-   *   *Requirements clarified. Ready to create the technical plan?*
-   *   *Wireflow created. Ready for technical plan?*
-   *   *Technical plan created. Generate quality checklist?*
-   *   *Quality checklist created. Generate QA scenarios?*
-   *   *QA Scenarios created. Generate tasks?*
-   *   *Tasks generated. Export to issue tracker?*
-   *   *Issues created. Run consistency analysis?*
-   *   *Analysis complete. Start implementation?*
-   *   *Implementation complete. Run convergence check?*
-
-At the end, if the `@sdd.converge` agent finds gaps and adds new tasks, click the button to run the implementation again until the feature is 100% compliant with the plan.
+```javascript
+/* SDD - vscode copilot plugin
+ *
+ * Specs
+ * ------------------
+ * - 0001-initial-setup.md
+ *   02/03/2026 10:15:00
+ * - 0003-comment-system.md
+ *   05/04/2026 14:20:00
+ */
+```
+This allows the `@sdd.converge` agent to always know which requirements define the current state of a file.
 
 ---
 
@@ -78,17 +80,24 @@ When building frontend features, Spec-Driven Development works best with a hybri
 2. **Reference:** Link the image inside your Markdown specification or wireflow files (e.g., `![UI Mockup](../../.sdd/ui/0001-feature-name-ui.png)`).
 3. **Attach in Chat (Vision):** LLMs cannot automatically "see" local images just by reading a file path. When you invoke `@sdd.specify` to write user stories, or `@sdd.implement` to write code, **drag and drop the image directly into the VS Code chat box**. This leverages the Vision feature, allowing the agent to analyze the layout, colors, and structure instantly while recording the reference in your SDD artifacts.
 
+
+## 💰 Token Economy & Cost Optimization
+
+To maximize the efficiency of your AI credits, follow these strategic guidelines:
+
+1.  **Context Isolation:** Perform planning and implementation in separate chat sessions to prevent "context dumping" that confuses the AI.
+2.  **Precise Targeting:** Use specific file references (`#file`) instead of global codebase scans (`#codebase`) whenever possible.
+3.  **Prompt Caching:** Agent instructions are placed at the **top** of the files to increase "cache hit" rates in VS Code, reducing latency and cost.
+4.  **Phased Implementation:** For large features, implement in small increments (e.g., Database first, then Logic, then UI). This keeps prompts short and accurate.
+
+## 🛠️ Installation
+
+1.  Open the Command Palette (**Ctrl+Shift+P**).
+2.  Run `Chat: Install Plugin From Source`.
+3.  Enter the URL of this repository.
+4.  Type `@sdd` in the Chat View to begin.
+
+> **Note:** Make sure the `chat.plugins.enabled` setting is set to `true` in your VS Code, as this is a Preview feature.
+
 ---
-
-## 🔧 Updating the Plugin
-
-When our team releases new improvements for the agents, you can quickly update your local version:
-1. Open the VS Code Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
-2. Run the command **Extensions: Check for Extension Updates**.
-VS Code will automatically pull the changes from our Git repository and update the agents in your environment.
-
-## 💡 Credits & Inspiration
-
-This plugin is heavily inspired by **[Spec Kit](https://github.com/github/spec-kit)**, an open-source toolkit created by GitHub to help developers get started with Spec-Driven Development. 
-
-While the original Spec Kit provides a CLI and works across multiple coding agents using slash commands, this plugin adapts its core philosophy (Spec → Plan → Tasks → Implement) into a fully native **VS Code Agent Plugin**. It leverages VS Code's Custom Agents and interactive Handoffs to create a seamless, UI-driven orchestration experience.
+*Inspired by [Spec Kit](https://github.com/github/spec-kit). Build intent, not just code.*
