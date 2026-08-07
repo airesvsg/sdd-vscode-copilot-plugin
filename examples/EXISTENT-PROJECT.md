@@ -71,6 +71,6 @@ In legacy codebases, the first implementation pass almost never catches 100% of 
 > `@sdd.converge Please assess the codebase against our spec and plan to verify if all planned work is complete.`
 
 **What happens:** 
-If the agent finds that the new comment system caused the legacy modal to lose its maximum height property, or missed a database migration, **it will automatically append a bug-fix or missing task to your `.sdd/tasks/` file** [2].
+If the agent finds that the new comment system caused the legacy modal to lose its maximum height property, or missed a database migration, **it will automatically append a bug-fix or missing task to your `.sdd/tasks/` file**.
 
-If the command appends new tasks, you must click the handoff to run `@sdd.implement` again to execute those specific fixes, and then repeat the `@sdd.converge` step [2, 3]. You loop through these two agents until `@sdd.converge` reports that the feature is fully complete and perfectly aligned with the specification [2].
+If the command appends new tasks, you must click the handoff to run `@sdd.implement` again to execute those specific fixes, and then repeat the `@sdd.converge` step [2, 3]. You loop through these two agents until `@sdd.converge` reports that the feature is fully complete and perfectly aligned with the specification.
