@@ -70,14 +70,13 @@ These specialized agents are orchestrated by `@sdd` to handle specific domains o
 To ensure the level of maturity required for professional SDD, the `sdd.implement` agent follows a strict **File Header Rule**. Every file created or modified will contain or append to this block:
 
 ```javascript
-/* SDD - vscode copilot plugin
+/* SDD - Traceability
  *
- * Specs
- * ------------------
- * - 0001-initial-setup.md
- *   02/03/2026 10:15:00
- * - 0003-comment-system.md
- *   05/04/2026 14:20:00
+ * specs:
+ *   - file: [SPEC-NAME].md
+ *     changes:
+ *       - timestamp: [YYYY-MM-DD HH:MM:SS]
+ *         description: [DESCRIPTION OF CHANGE]
  */
 ```
 This allows the `@sdd.converge` agent to always know which requirements define the current state of a file.
