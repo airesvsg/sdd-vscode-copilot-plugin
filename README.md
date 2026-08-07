@@ -29,15 +29,27 @@ The plugin guides you through a sequential flow using **Native Handoffs**. You s
 
 ## 🤖 The Expert Subagents (Internal)
 
-These agents are orchestrated by `@sdd` and are not directly invocable by users to maintain process integrity:
+These specialized agents are orchestrated by `@sdd` to handle specific domains of the lifecycle:
 
-*   📜 **`sdd.constitution`:** Establishes the foundation in `.sdd/constitutions/`.
-*   🎯 **`sdd.specify`:** Analyzes Vision mockups and writes specs in `.sdd/specs/`.
-*   🔍 **`sdd.clarify`:** Acts as a Senior BA to quiz the user on edge cases.
-*   📐 **`sdd.plan`:** Creates the technical blueprint in `.sdd/plans/`.
-*   🧪 **`sdd.qa-scenarios`:** Writes BDD tests in `.sdd/qa-scenarios/`.
-*   ⚙️ **`sdd.implement`:** Executes tasks and maintains file traceability.
-*   🏁 **`sdd.converge`:** The "Safety Net" that loops implementation until the feature is complete.
+### Phase 1: Foundation & Requirements
+*   📜 **`sdd.constitution`**: Establishes immutable architectural rules and tech stack principles in `.sdd/constitutions/`.
+*   🎯 **`sdd.specify`**: Defines the "What" and "Why" (User Stories & Acceptance Criteria) in `.sdd/specs/`.
+*   🔍 **`sdd.clarify`**: Acts as a Senior BA to quiz the user on edge cases and resolve ambiguities before planning.
+*   🎨 **`sdd.wireflow`**: Visualizes navigation and UI states using Mermaid.js diagrams in `.sdd/wireflows/`.
+
+### Phase 2: Planning & Quality
+*   📐 **`sdd.plan`**: Designs the technical blueprint, database schemas, and component architecture in `.sdd/plans/`.
+*   ✅ **`sdd.checklist`**: Generates quality checklists ("unit tests for English") to validate requirement completeness.
+*   🧪 **`sdd.qa-scenarios`**: Translates functional requirements into structured BDD/Gherkin test scenarios in `.sdd/qa-scenarios/`.
+
+### Phase 3: Breakdown & Execution
+*   📋 **`sdd.tasks`**: Breaks the technical plan into a sequential, TDD-focused task list in `.sdd/tasks/`.
+*   📤 **`sdd.taskstoissues`**: Synchronizes generated tasks directly to your GitHub repository as issues using MCP tools.
+*   ⚖️ **`sdd.analyze`**: Runs a cross-artifact audit to ensure specs, plans, and tasks are perfectly aligned before coding starts.
+
+### Phase 4: Implementation & Audit
+*   ⚙️ **`sdd.implement`**: Executes tasks autonomously using terminal and file tools, maintaining strict file traceability headers.
+*   🏁 **`sdd.converge`**: The ultimate safety net. Compares the final codebase against the spec/plan and generates fix-up tasks for any gaps.
 
 ## 🚀 Practical Examples
 
