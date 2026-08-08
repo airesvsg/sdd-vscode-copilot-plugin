@@ -1,0 +1,668 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spec-Driven Development (SDD) Agent Plugin for VS Code</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        vscode: {
+                            bg: '#1e1e1e',
+                            sidebar: '#252526',
+                            active: '#37373d',
+                            border: '#3f3f46',
+                            accent: '#007acc',
+                            accentHover: '#1f8ad2',
+                            text: '#cccccc',
+                            muted: '#858585'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .custom-scrollbar::-webkit-scrollbar { width: 10px; height: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #424242; border: 3px solid #252526; border-radius: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #4f4f4f; }
+        .vscode-tree-item:hover { background-color: #2a2d2e; }
+        .vscode-tree-item.active { background-color: #37373d; color: #fff; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-cube text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">SDD Agent</span>
+                    <span class="text-xs text-cyan-400 block font-mono">for VS Code</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#features" class="hover:text-cyan-400 transition-colors" data-i18n="nav_features">Recursos</a>
+                <a href="#workflow" class="hover:text-cyan-400 transition-colors" data-i18n="nav_workflow">Fluxo SDD</a>
+                <a href="#usage" class="hover:text-cyan-400 transition-colors" data-i18n="nav_usage">No Copilot</a>
+                <a href="#install" class="hover:text-cyan-400 transition-colors" data-i18n="nav_install">Instalação</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <!-- Language Selector -->
+                <select id="lang-selector" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 font-mono">
+                    <option value="pt">PT</option>
+                    <option value="en">EN</option>
+                    <option value="es">ES</option>
+                </select>
+
+                <a href="https://github.com/airesvsg/sdd-vscode-copilot-plugin" target="_blank" class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-colors">
+                    <i class="fa-brands fa-github text-base"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="#install" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-md shadow-cyan-500/20 transition-all transform active:scale-95" data-i18n="btn_install">
+                    Instalar Plugin
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-24 overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-[300px] h-[300px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-medium mb-6">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span data-i18n="hero_pill">Desenvolvimento Dirigido por Especificações no VS Code</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight" data-i18n="hero_title">
+                    Defina o que construir <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">antes de gerar código</span> no Copilot.
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-400 mb-10 leading-relaxed" data-i18n="hero_subtitle">
+                    Interaja diretamente com o agente <code class="text-cyan-400 font-mono">@sdd</code> no GitHub Copilot Chat para transformar especificações em código rigoroso.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#install" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-base shadow-xl shadow-cyan-500/25 transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="hero_btn_install">Instalar no VS Code</span>
+                    </a>
+                    <a href="https://github.com/airesvsg/sdd-vscode-copilot-plugin" target="_blank" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-base transition-all flex items-center justify-center gap-3">
+                        <i class="fa-brands fa-github"></i>
+                        <span data-i18n="hero_btn_github">Repositório Oficial</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- VS Code Copilot Interface Showcase -->
+            <div class="mt-16 max-w-5xl mx-auto rounded-xl border border-[#3f3f46] bg-vscode-bg shadow-2xl overflow-hidden flex flex-col">
+                <!-- VS Code Title Bar -->
+                <div class="bg-vscode-bg px-4 py-2 flex items-center justify-between border-b border-[#3f3f46]">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                    </div>
+                    <div class="text-xs text-[#cccccc] font-sans text-center flex-1">
+                        sdd-workspace — Visual Studio Code
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 min-h-[380px] text-sm">
+                    <!-- VS Code Sidebar (Explorer) -->
+                    <div class="hidden md:flex flex-col bg-vscode-sidebar border-r border-[#3f3f46] custom-scrollbar">
+                        <div class="px-5 py-3 text-[11px] text-vscode-muted font-sans uppercase tracking-widest">
+                            Explorer
+                        </div>
+                        
+                        <div class="flex items-center gap-1.5 px-2 py-1 cursor-pointer text-xs font-bold text-vscode-text tracking-wide hover:bg-[#2a2d2e] transition-colors">
+                            <i class="fa-solid fa-chevron-down text-[10px] w-3 text-center"></i>
+                            WORKSPACE
+                        </div>
+                        
+                        <div class="flex flex-col font-mono text-[13px] text-vscode-text select-none pb-4">
+                            <!-- .sdd folder -->
+                            <div class="flex items-center gap-1.5 pl-6 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder-open text-[#dcb67a]"></i>
+                                <span>.sdd</span>
+                            </div>
+                            
+                            <!-- constitutions folder -->
+                            <div class="flex items-center gap-1.5 pl-10 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder-open text-[#dcb67a]"></i>
+                                <span class="text-[#cccccc]">constitutions</span>
+                            </div>
+                            
+                            <!-- constitution.md -->
+                            <div class="flex items-center gap-1.5 pl-14 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-brands fa-markdown text-[#519aba] w-3 text-center"></i>
+                                <span class="text-[#cccccc]">constitution.md</span>
+                            </div>
+                            
+                            <!-- plans folder -->
+                            <div class="flex items-center gap-1.5 pl-10 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-solid fa-chevron-right text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder text-[#dcb67a]"></i>
+                                <span class="text-[#cccccc]">plans</span>
+                            </div>
+                            
+                            <!-- specs folder -->
+                            <div class="flex items-center gap-1.5 pl-10 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder-open text-[#dcb67a]"></i>
+                                <span class="text-[#cccccc]">specs</span>
+                            </div>
+                            
+                            <!-- 001-cart-flow.md (Active) -->
+                            <div class="flex items-center gap-1.5 pl-[3.25rem] py-1 vscode-tree-item active cursor-pointer border-l-[3px] border-vscode-accent -ml-[3px]">
+                                <i class="fa-brands fa-markdown text-[#519aba] w-3 text-center"></i>
+                                <span class="text-cyan-400">001-cart-flow.md</span>
+                            </div>
+                            
+                            <!-- tasks folder -->
+                            <div class="flex items-center gap-1.5 pl-10 py-1 vscode-tree-item cursor-pointer">
+                                <i class="fa-solid fa-chevron-right text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder text-[#dcb67a]"></i>
+                                <span class="text-[#cccccc]">tasks</span>
+                            </div>
+                            
+                            <!-- src folder -->
+                            <div class="flex items-center gap-1.5 pl-6 py-1 vscode-tree-item cursor-pointer mt-1">
+                                <i class="fa-solid fa-chevron-right text-[10px] text-vscode-muted w-3 text-center"></i>
+                                <i class="fa-solid fa-folder text-[#dcb67a]"></i>
+                                <span class="text-[#cccccc]">src</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VS Code Editor / Chat Panel -->
+                    <div class="col-span-3 bg-vscode-bg p-6 flex flex-col justify-between font-sans">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-[#3f3f46]">
+                            <i class="fa-solid fa-comments text-vscode-muted"></i>
+                            <span class="text-xs text-vscode-text font-semibold uppercase tracking-wider">GitHub Copilot</span>
+                        </div>
+                        
+                        <div class="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2">
+                            <!-- User Message -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-[#007acc] flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="mt-1 text-sm text-[#cccccc] font-sans">
+                                    <span class="text-vscode-accent font-semibold bg-vscode-accent/10 px-1.5 py-0.5 rounded mr-1">@sdd</span> 
+                                    Criar especificação para o novo carrinho de compras com Pix e cartão.
+                                </div>
+                            </div>
+
+                            <!-- Agent Response -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <div class="flex-1 mt-1">
+                                    <div class="flex items-center gap-2 text-purple-400 font-semibold mb-2 text-sm">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span data-i18n="chat_agent_active">Agente @sdd Ativo no Copilot</span>
+                                    </div>
+                                    <p class="mb-3 text-[#cccccc] text-sm" data-i18n="chat_agent_desc">Orquestrando o fluxo SDD no workspace atual:</p>
+                                    
+                                    <div class="bg-[#1e1e1e] p-3 rounded-lg font-mono text-xs text-[#cccccc] border border-[#3f3f46] shadow-inner space-y-2">
+                                        <div class="flex gap-2">
+                                            <i class="fa-solid fa-file-circle-check text-[#27c93f] mt-0.5"></i>
+                                            <div>
+                                                Especificação gerada em:<br/>
+                                                <span class="text-vscode-accent hover:underline cursor-pointer">.sdd/specs/001-cart-flow.md</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-px bg-[#3f3f46] my-2 w-full"></div>
+                                        <div class="flex gap-2">
+                                            <i class="fa-solid fa-circle-info text-[#519aba] mt-0.5"></i>
+                                            <div>
+                                                Próximo passo via <code class="text-purple-400 bg-purple-500/10 px-1 rounded">@sdd</code>:<br/>
+                                                Gerar plano técnico em <span class="text-vscode-muted">.sdd/plans/</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Mockup -->
+                        <div class="mt-6 pt-4 text-xs text-vscode-muted flex items-center justify-between">
+                            <div class="flex-1 bg-[#2d2d2d] border border-[#3f3f46] rounded flex items-center px-3 py-2 shadow-inner">
+                                <span class="text-[#858585]">Ask Copilot or type / for commands</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VS Code Status Bar -->
+                <div class="bg-vscode-accent text-white px-3 py-1 flex items-center justify-between text-[11px] font-sans">
+                    <div class="flex items-center gap-4">
+                        <span class="flex items-center gap-1 hover:bg-white/20 px-1 cursor-pointer rounded"><i class="fa-solid fa-code-branch"></i> main</span>
+                        <span class="flex items-center gap-1 hover:bg-white/20 px-1 cursor-pointer rounded"><i class="fa-solid fa-rotate"></i> 0</span>
+                        <span class="flex items-center gap-1 hover:bg-white/20 px-1 cursor-pointer rounded"><i class="fa-solid fa-circle-xmark"></i> 0 <i class="fa-solid fa-triangle-exclamation"></i> 0</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="flex items-center gap-1 hover:bg-white/20 px-1 cursor-pointer rounded"><i class="fa-solid fa-robot"></i> Copilot Ready</span>
+                        <span class="hover:bg-white/20 px-1 cursor-pointer rounded">UTF-8</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Highlights / Destaques -->
+    <section id="features" class="py-20 bg-slate-900/50 border-t border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-white mb-4" data-i18n="feat_title">Por que usar o SDD Agent Plugin?</h2>
+                <p class="text-slate-400" data-i18n="feat_subtitle">Elimine o "vibe coding" e introduza rigor de engenharia diretamente nas conversas com o GitHub Copilot.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-at"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="feat_1_title">Orquestração via @sdd</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="feat_1_desc">
+                        Acione o orquestrador principal com <code class="text-cyan-400 font-mono">@sdd</code>. Ele delega para subagentes especializados sem poluir sua interface.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="feat_2_title">Visão Computacional</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="feat_2_desc">
+                        Arraste mockups e wireframes para o chat do VS Code para gerar especificações visuais exatas.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 group">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="feat_3_title">Rastreabilidade Total</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="feat_3_desc">
+                        Cada bloco de código gerado possui cabeçalhos vinculados às especificações de origem salvos na pasta `.sdd/`.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/5 group">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="feat_4_title">Gates de Qualidade & BDD</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="feat_4_desc">
+                        Geração automática de cenários BDD e verificação de convergência antes do commit.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section / O Fluxo SDD -->
+    <section id="workflow" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-cyan-400 text-xs font-semibold uppercase tracking-widest block mb-2" data-i18n="wf_kicker">Pipeline Metodológico</span>
+                <h2 class="text-3xl font-bold tracking-tight text-white mb-4" data-i18n="wf_title">O Fluxo de Trabalho SDD</h2>
+                <p class="text-slate-400" data-i18n="wf_subtitle">Fases estruturadas conduzidas inteiramente pelo agente @sdd no Copilot.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-slate-700 font-mono text-3xl font-bold">01</div>
+                    <div class="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-file-pen"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Specify</h3>
+                    <code class="text-xs text-cyan-400 font-mono block mb-3">@sdd (Especificar)</code>
+                    <p class="text-sm text-slate-400" data-i18n="wf_1_desc">Define requisitos e histórias de usuário (salvos em `.sdd/specs/`) através de diálogo.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-slate-700 font-mono text-3xl font-bold">02</div>
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-compass-drafting"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Plan</h3>
+                    <code class="text-xs text-blue-400 font-mono block mb-3">@sdd (Planejar)</code>
+                    <p class="text-sm text-slate-400" data-i18n="wf_2_desc">Gera arquitetura técnica e contratos (salvos em `.sdd/plans/`) antes de codificar.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-slate-700 font-mono text-3xl font-bold">03</div>
+                    <div class="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Tasks</h3>
+                    <code class="text-xs text-indigo-400 font-mono block mb-3">@sdd (Tarefas)</code>
+                    <p class="text-sm text-slate-400" data-i18n="wf_3_desc">Divide o plano em subtarefas atômicas (salvas em `.sdd/tasks/`) otimizadas para IA.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-slate-700 font-mono text-3xl font-bold">04</div>
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Implement</h3>
+                    <code class="text-xs text-emerald-400 font-mono block mb-3">@sdd (Implementar)</code>
+                    <p class="text-sm text-slate-400" data-i18n="wf_4_desc">Executa a escrita de código com validação contínua e rastreabilidade nos artefatos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage in VS Code Copilot Section -->
+    <section id="usage" class="py-20 bg-slate-900/50 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-cyan-400 text-xs font-semibold uppercase tracking-widest block mb-2" data-i18n="usage_kicker">Experiência Nativa</span>
+                <h2 class="text-3xl font-bold tracking-tight text-white mb-4" data-i18n="usage_title">Como usar o agente @sdd no Copilot</h2>
+                <p class="text-slate-400" data-i18n="usage_subtitle">Toda a interação é feita através do agente principal @sdd no painel de chat do VS Code.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-at"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="usage_1_title">Invocando o @sdd</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4" data-i18n="usage_1_desc">
+                        Basta digitar <code class="text-cyan-400 font-mono">@sdd</code> no chat do GitHub Copilot. O orquestrador lerá automaticamente o contexto da pasta <code class="text-cyan-400 font-mono">.sdd/</code> e orientará cada fase do desenvolvimento.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded font-mono text-xs text-cyan-300 border border-slate-800">
+                        @sdd Quero criar um fluxo de autenticação OAuth2
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-4">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2" data-i18n="usage_2_title">Diálogo Contínuo</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4" data-i18n="usage_2_desc">
+                        Converse naturalmente com o <code class="text-cyan-400 font-mono">@sdd</code> pedindo para avançar para a próxima fase (Plano, Tarefas ou Implementação) conforme a necessidade do projeto.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded font-mono text-xs text-indigo-300 space-y-1 border border-slate-800">
+                        <div>@sdd Agora gere o plano arquitetural</div>
+                        <div class="text-slate-500">...</div>
+                        <div>@sdd Crie as tarefas atômicas e testes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="install" class="py-20 bg-gradient-to-b from-slate-950 to-slate-900 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-white mb-4" data-i18n="install_title">Instalação no Visual Studio Code</h2>
+            <p class="text-slate-400 mb-10 max-w-xl mx-auto" data-i18n="install_subtitle">Siga os passos abaixo para instalar o plugin diretamente da fonte no VS Code.</p>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-left shadow-2xl mb-8">
+                <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-800">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-cyan-400"></i> <span data-i18n="install_box_title">Passo a Passo de Instalação</span>
+                    </span>
+                    <span class="text-xs text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full font-mono border border-cyan-500/20">VS Code Preview</span>
+                </div>
+                
+                <ol class="space-y-4 text-sm text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</span>
+                        <div><span data-i18n="install_step_1">Abra a Paleta de Comandos no VS Code pressionando</span> <code class="bg-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono">Ctrl+Shift+P</code> (<code class="bg-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono">Cmd+Shift+P</code> no Mac).</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</span>
+                        <div><span data-i18n="install_step_2">Execute o comando</span> <code class="bg-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono">Chat: Install Plugin From Source</code>.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</span>
+                        <div><span data-i18n="install_step_3">Cole a URL do seu repositório GitHub:</span> <code class="bg-slate-800 text-slate-200 px-1.5 py-0.5 rounded font-mono text-xs">https://github.com/airesvsg/sdd-vscode-copilot-plugin</code>.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</span>
+                        <div><span data-i18n="install_step_4">Digite</span> <code class="bg-slate-800 text-cyan-300 px-1.5 py-0.5 rounded font-mono">@sdd</code> <span data-i18n="install_step_4_end">no Copilot Chat para iniciar o fluxo.</span></div>
+                    </li>
+                </ol>
+
+                <div class="mt-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-base shrink-0"></i>
+                    <span data-i18n="install_note"><strong>Nota:</strong> Certifique-se de que a configuração <code class="font-mono bg-amber-500/20 px-1 rounded border border-amber-500/30">chat.plugins.enabled</code> está habilitada no seu VS Code.</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="https://github.com/airesvsg/sdd-vscode-copilot-plugin" target="_blank" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    <span data-i18n="btn_github_repo">Acessar Repositório no GitHub</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-cube text-white text-sm"></i>
+                </div>
+                <span class="font-bold text-sm text-slate-300">Spec-Driven Development Agent Plugin</span>
+            </div>
+            <p class="text-xs text-slate-500" data-i18n="footer_credits">
+                Inspirado no Spec Kit da comunidade GitHub. Licença MIT.
+            </p>
+            <div class="flex items-center space-x-4 text-slate-400 text-sm">
+                <a href="https://github.com/airesvsg/sdd-vscode-copilot-plugin" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
+                <a href="https://code.visualstudio.com" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-code text-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Translation Script -->
+    <script>
+        const translations = {
+            pt: {
+                nav_features: "Recursos",
+                nav_workflow: "Fluxo SDD",
+                nav_usage: "No Copilot",
+                nav_install: "Instalação",
+                btn_install: "Instalar Plugin",
+                hero_pill: "Desenvolvimento Dirigido por Especificações no VS Code",
+                hero_title: "Defina o que construir <span class='bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent'>antes de gerar código</span> no Copilot.",
+                hero_subtitle: "Interaja diretamente com o agente @sdd no GitHub Copilot Chat para transformar especificações em código rigoroso.",
+                hero_btn_install: "Instalar no VS Code",
+                hero_btn_github: "Repositório Oficial",
+                chat_agent_active: "Agente @sdd Ativo no Copilot",
+                chat_agent_desc: "Orquestrando o fluxo SDD no workspace atual:",
+                feat_title: "Por que usar o SDD Agent Plugin?",
+                feat_subtitle: "Elimine o 'vibe coding' e introduza rigor de engenharia diretamente nas conversas com o GitHub Copilot.",
+                feat_1_title: "Orquestração via @sdd",
+                feat_1_desc: "Acione o orquestrador principal com @sdd. Ele delega para subagentes especializados sem poluir sua interface.",
+                feat_2_title: "Visão Computacional",
+                feat_2_desc: "Arraste mockups e wireframes para o chat do VS Code para gerar especificações visuais exatas.",
+                feat_3_title: "Rastreabilidade Total",
+                feat_3_desc: "Cada bloco de código gerado possui cabeçalhos vinculados às especificações de origem salvos na pasta `.sdd/`.",
+                feat_4_title: "Gates de Qualidade & BDD",
+                feat_4_desc: "Geração automática de cenários BDD e verificação de convergência antes do commit.",
+                wf_kicker: "Pipeline Metodológico",
+                wf_title: "O Fluxo de Trabalho SDD",
+                wf_subtitle: "Fases estruturadas conduzidas inteiramente pelo agente @sdd no Copilot.",
+                wf_1_desc: "Define requisitos e histórias de usuário (salvos em `.sdd/specs/`) através de diálogo.",
+                wf_2_desc: "Gera arquitetura técnica e contratos (salvos em `.sdd/plans/`) antes de codificar.",
+                wf_3_desc: "Divide o plano em subtarefas atômicas (salvas em `.sdd/tasks/`) otimizadas para IA.",
+                wf_4_desc: "Executa a escrita de código com validação contínua e rastreabilidade nos artefatos.",
+                usage_kicker: "Experiência Nativa",
+                usage_title: "Como usar o agente @sdd no Copilot",
+                usage_subtitle: "Toda a interação é feita através do agente principal @sdd no painel de chat do VS Code.",
+                usage_1_title: "Invocando o @sdd",
+                usage_1_desc: "Basta digitar @sdd no chat do GitHub Copilot. O orquestrador lerá automaticamente o contexto da pasta <code class='text-cyan-400 font-mono'>.sdd/</code> e orientará cada fase do desenvolvimento.",
+                usage_2_title: "Diálogo Contínuo",
+                usage_2_desc: "Converse naturalmente com o @sdd pedindo para avançar para a próxima fase (Plano, Tarefas ou Implementação) conforme a necessidade do projeto.",
+                install_title: "Instalação no Visual Studio Code",
+                install_subtitle: "Siga os passos abaixo para instalar o plugin diretamente da fonte no VS Code.",
+                install_box_title: "Passo a Passo de Instalação",
+                install_step_1: "Abra a Paleta de Comandos no VS Code pressionando",
+                install_step_2: "Execute o comando",
+                install_step_3: "Cole a URL do seu repositório GitHub:",
+                install_step_4: "Digite",
+                install_step_4_end: "no Copilot Chat para iniciar o fluxo.",
+                install_note: "<strong>Nota:</strong> Certifique-se de que a configuração <code class='font-mono bg-amber-500/20 px-1 rounded border border-amber-500/30'>chat.plugins.enabled</code> está habilitada no seu VS Code.",
+                btn_github_repo: "Acessar Repositório no GitHub",
+                footer_credits: "Inspirado no Spec Kit da comunidade GitHub. Licença MIT."
+            },
+            en: {
+                nav_features: "Features",
+                nav_workflow: "SDD Workflow",
+                nav_usage: "In Copilot",
+                nav_install: "Installation",
+                btn_install: "Install Plugin",
+                hero_pill: "Spec-Driven Development in VS Code",
+                hero_title: "Define what to build <span class='bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent'>before generating code</span> in Copilot.",
+                hero_subtitle: "Interact directly with the @sdd agent in GitHub Copilot Chat to turn specifications into rigorous code.",
+                hero_btn_install: "Install in VS Code",
+                hero_btn_github: "Official Repository",
+                chat_agent_active: "@sdd Agent Active in Copilot",
+                chat_agent_desc: "Orchestrating the SDD workflow in the current workspace:",
+                feat_title: "Why use the SDD Agent Plugin?",
+                feat_subtitle: "Eliminate 'vibe coding' and introduce engineering rigor directly into GitHub Copilot chats.",
+                feat_1_title: "Orchestration via @sdd",
+                feat_1_desc: "Trigger the main orchestrator with @sdd. It delegates to specialized subagents without cluttering your UI.",
+                feat_2_title: "Computer Vision",
+                feat_2_desc: "Drag and drop mockups and wireframes into the VS Code chat to generate exact visual specs.",
+                feat_3_title: "Full Traceability",
+                feat_3_desc: "Every generated code block features headers linked back to originating specifications saved in the `.sdd/` folder.",
+                feat_4_title: "Quality Gates & BDD",
+                feat_4_desc: "Automatic BDD scenario generation and convergence verification before committing.",
+                wf_kicker: "Methodological Pipeline",
+                wf_title: "The SDD Workflow",
+                wf_subtitle: "Structured phases driven entirely by the @sdd agent in Copilot.",
+                wf_1_desc: "Define requirements and user stories (saved in `.sdd/specs/`) through dialogue.",
+                wf_2_desc: "Generate technical architecture and API contracts (saved in `.sdd/plans/`) before writing code.",
+                wf_3_desc: "Break down the plan into atomic subtasks (saved in `.sdd/tasks/`) optimized for AI.",
+                wf_4_desc: "Execute code writing with continuous validation and artifact traceability.",
+                usage_kicker: "Native Experience",
+                usage_title: "How to use the @sdd agent in Copilot",
+                usage_subtitle: "All interaction is handled through the main @sdd agent in the VS Code chat panel.",
+                usage_1_title: "Invoking @sdd",
+                usage_1_desc: "Simply type @sdd in GitHub Copilot chat. The orchestrator will automatically read context from the <code class='text-cyan-400 font-mono'>.sdd/</code> folder and guide each development phase.",
+                usage_2_title: "Continuous Dialogue",
+                usage_2_desc: "Chat naturally with @sdd asking to advance to the next phase (Plan, Tasks, or Implementation) according to project needs.",
+                install_title: "Installation in Visual Studio Code",
+                install_subtitle: "Follow the steps below to install the plugin directly from source in VS Code.",
+                install_box_title: "Installation Step-by-Step",
+                install_step_1: "Open the Command Palette in VS Code by pressing",
+                install_step_2: "Run the command",
+                install_step_3: "Paste your GitHub repository URL:",
+                install_step_4: "Type",
+                install_step_4_end: "in Copilot Chat to start the workflow.",
+                install_note: "<strong>Note:</strong> Make sure the setting <code class='font-mono bg-amber-500/20 px-1 rounded border border-amber-500/30'>chat.plugins.enabled</code> is enabled in your VS Code.",
+                btn_github_repo: "Access GitHub Repository",
+                footer_credits: "Inspired by Spec Kit from the GitHub community. MIT License."
+            },
+            es: {
+                nav_features: "Características",
+                nav_workflow: "Flujo SDD",
+                nav_usage: "En Copilot",
+                nav_install: "Instalación",
+                btn_install: "Instalar Plugin",
+                hero_pill: "Desarrollo Guiado por Especificaciones en VS Code",
+                hero_title: "Define qué construir <span class='bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent'>antes de generar código</span> en Copilot.",
+                hero_subtitle: "Interactúa directamente con el agente @sdd en GitHub Copilot Chat para transformar especificaciones en código riguroso.",
+                hero_btn_install: "Instalar en VS Code",
+                hero_btn_github: "Repositorio Oficial",
+                chat_agent_active: "Agente @sdd Activo en Copilot",
+                chat_agent_desc: "Orquestando el flujo SDD en el espacio de trabajo actual:",
+                feat_title: "¿Por qué usar el SDD Agent Plugin?",
+                feat_subtitle: "Elimina el 'vibe coding' e introduce rigor de ingeniería directamente en las charlas con GitHub Copilot.",
+                feat_1_title: "Orquestración vía @sdd",
+                feat_1_desc: "Activa el orquestrador principal con @sdd. Delega en subagentes especializados sin saturar tu interfaz.",
+                feat_2_title: "Visión por Computador",
+                feat_2_desc: "Arrastra mockups y wireframes al chat de VS Code para generar especificaciones visuales exactas.",
+                feat_3_title: "Trazabilidad Total",
+                feat_3_desc: "Cada bloque de código generado incluye cabeceras vinculadas a especificaciones origen guardadas en la carpeta `.sdd/`.",
+                feat_4_title: "Gates de Calidad y BDD",
+                feat_4_desc: "Generación automática de escenarios BDD y verificación de convergencia antes de hacer commit.",
+                wf_kicker: "Pipeline Metodológico",
+                wf_title: "El Flujo de Trabajo SDD",
+                wf_subtitle: "Fases estructuradas guiadas enteramente por el agente @sdd en Copilot.",
+                wf_1_desc: "Define requisitos e historias de usuario (guardados en `.sdd/specs/`) mediante diálogo.",
+                wf_2_desc: "Genera arquitectura técnica y contratos de API (guardados en `.sdd/plans/`) antes de programar.",
+                wf_3_desc: "Divide el plan en subtareas atómicas (guardadas en `.sdd/tasks/`) optimizadas para IA.",
+                wf_4_desc: "Ejecuta la escritura de código con validación continua y trazabilidad.",
+                usage_kicker: "Experiencia Nativa",
+                usage_title: "Cómo usar el agente @sdd en Copilot",
+                usage_subtitle: "Toda la interacción se gestiona a través del agente principal @sdd en el panel de chat de VS Code.",
+                usage_1_title: "Invocando a @sdd",
+                usage_1_desc: "Escribe @sdd en el chat de GitHub Copilot. El orquestrador leerá automáticamente el contexto de la carpeta <code class='text-cyan-400 font-mono'>.sdd/</code> y guiará cada fase de desarrollo.",
+                usage_2_title: "Diálogo Continuo",
+                usage_2_desc: "Chatea de forma natural con @sdd pidiendo avanzar a la siguiente fase (Plan, Tareas o Implementación) según las necesidades del proyecto.",
+                install_title: "Instalación en Visual Studio Code",
+                install_subtitle: "Sigue los pasos a continuación para instalar el plugin directamente desde la fuente en VS Code.",
+                install_box_title: "Paso a Passo de Instalación",
+                install_step_1: "Abre la Paleta de Comandos en VS Code presionando",
+                install_step_2: "Ejecuta el comando",
+                install_step_3: "Pega la URL de tu repositorio de GitHub:",
+                install_step_4: "Escribe",
+                install_step_4_end: "en Copilot Chat para iniciar el flujo.",
+                install_note: "<strong>Nota:</strong> Asegúrate de que la configuración <code class='font-mono bg-amber-500/20 px-1 rounded border border-amber-500/30'>chat.plugins.enabled</code> esté habilitada en tu VS Code.",
+                btn_github_repo: "Acceder al Repositorio de GitHub",
+                footer_credits: "Inspirado en Spec Kit de la comunidad de GitHub. Licença MIT."
+            }
+        };
+
+        function changeLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            document.getElementById('lang-selector').value = lang;
+            localStorage.setItem('sdd_lang', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('sdd_lang');
+            if (savedLang && translations[savedLang]) {
+                changeLanguage(savedLang);
+            } else {
+                const browserLang = navigator.language || navigator.userLanguage;
+                const shortLang = browserLang ? browserLang.substring(0, 2) : 'en';
+                if (translations[shortLang]) {
+                    changeLanguage(shortLang);
+                } else {
+                    changeLanguage('en');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
