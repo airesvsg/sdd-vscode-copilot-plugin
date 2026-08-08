@@ -6,6 +6,15 @@ Build high-quality software by making **specifications the primary, executable a
 
 The **SDD Agent Plugin** is a comprehensive orchestration framework that replaces "vibe coding" with a structured, step-by-step process. By using a single lead orchestrator (`@sdd`) and a team of internal expert subagents, it ensures that every line of code is anchored to a verified functional requirement.
 
+- [Key Highlights](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-key-highlights)
+- [The SDD Lifecycle](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-the-sdd-lifecycle)
+- [The Expert Subagents](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-the-expert-subagents-internal)
+- [Practical Examples](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-practical-examples)
+- [Traceability & Maintenance](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-traceability--maintenance)
+- [Handling UI Designs & Mockups](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-handling-ui-designs-and-mockups)
+- [Token Economy & Cost Optimization](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-token-economy--cost-optimization)
+- [Installation](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-installation)
+
 ## 🌟 Key Highlights
 *   **Orchestrated Workflow:** Interact only with the lead agent `@sdd`. It delegates tasks to specialized subagents (Product Manager, Architect, QA, Implementer) that are hidden from the main menu to reduce clutter.
 *   **Vision-Powered Specs:** Drag and drop UI mockups directly into the chat. The agents analyze visual layouts to extract precise acceptance criteria.
@@ -83,7 +92,7 @@ This allows the `@sdd.converge` agent to always know which requirements define t
 
 ---
 
-## 🖼️ Handling UI Designs and Mockups
+## 🖼️ Handling UI Designs & Mockups
 
 When building frontend features, Spec-Driven Development works best with a hybrid approach combining file-based documentation and VS Code's native Vision capabilities:
 
