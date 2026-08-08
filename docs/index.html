@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-PT" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,6 +61,7 @@
             <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
                 <a href="#features" class="hover:text-cyan-400 transition-colors" data-i18n="nav_features">Recursos</a>
                 <a href="#workflow" class="hover:text-cyan-400 transition-colors" data-i18n="nav_workflow">Fluxo SDD</a>
+                <a href="#subagents" class="hover:text-cyan-400 transition-colors" data-i18n="nav_subagents">Subagentes</a>
                 <a href="#usage" class="hover:text-cyan-400 transition-colors" data-i18n="nav_usage">No Copilot</a>
                 <a href="#install" class="hover:text-cyan-400 transition-colors" data-i18n="nav_install">Instalação</a>
             </nav>
@@ -378,6 +379,79 @@
         </div>
     </section>
 
+    <!-- Subagents Section -->
+    <section id="subagents" class="py-20 bg-slate-900/30 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-cyan-400 text-xs font-semibold uppercase tracking-widest block mb-2" data-i18n="subagents_kicker">Especialistas Internos</span>
+                <h2 class="text-3xl font-bold tracking-tight text-white mb-4" data-i18n="subagents_title">A Equipe de Subagentes</h2>
+                <p class="text-slate-400" data-i18n="subagents_subtitle">O @sdd atua como orquestrador principal, delegando tarefas para agentes especializados, garantindo rigor e foco em cada fase do ciclo.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/5">
+                    <div class="text-cyan-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-file-contract w-4 text-center"></i> sdd.constitution</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_const_desc">Define as regras fundamentais, stack tecnológica e diretrizes globais do projeto.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-blue-500/50 transition-all hover:shadow-lg hover:shadow-blue-500/5">
+                    <div class="text-blue-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-file-pen w-4 text-center"></i> sdd.specify</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_spec_desc">Cria a especificação inicial e histórias de utilizador a partir de uma ideia ou pedido.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-indigo-500/50 transition-all hover:shadow-lg hover:shadow-indigo-500/5">
+                    <div class="text-indigo-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-clipboard-question w-4 text-center"></i> sdd.clarify</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_clarify_desc">Analisa a especificação em busca de ambiguidades e faz perguntas para refinar os detalhes.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/5">
+                    <div class="text-purple-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-pen-ruler w-4 text-center"></i> sdd.wireflow</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_wireflow_desc">Analisa mockups (imagens) e gera especificações visuais detalhadas de UI/UX.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-fuchsia-500/50 transition-all hover:shadow-lg hover:shadow-fuchsia-500/5">
+                    <div class="text-fuchsia-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-compass-drafting w-4 text-center"></i> sdd.plan</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_plan_desc">Elabora a arquitetura técnica, contratos de API e modelação de dados antes da implementação.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-pink-500/50 transition-all hover:shadow-lg hover:shadow-pink-500/5">
+                    <div class="text-pink-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-list-check w-4 text-center"></i> sdd.checklist</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_check_desc">Verifica as especificações e planos contra normas de segurança, performance e acessibilidade.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-rose-500/50 transition-all hover:shadow-lg hover:shadow-rose-500/5">
+                    <div class="text-rose-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-vial-circle-check w-4 text-center"></i> sdd.qa-scenarios</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_qa_desc">Gera cenários de teste BDD (Given/When/Then) baseados nos critérios de aceitação.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-orange-500/50 transition-all hover:shadow-lg hover:shadow-orange-500/5">
+                    <div class="text-orange-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-list-ol w-4 text-center"></i> sdd.tasks</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_tasks_desc">Decompõe o plano técnico em subtarefas atómicas, fáceis de implementar e testar.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-amber-500/50 transition-all hover:shadow-lg hover:shadow-amber-500/5">
+                    <div class="text-amber-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-ticket w-4 text-center"></i> sdd.taskstoissues</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_issues_desc">Converte as tarefas geradas em issues diretamente no rastreador (ex: GitHub Issues).</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-yellow-500/50 transition-all hover:shadow-lg hover:shadow-yellow-500/5">
+                    <div class="text-yellow-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-magnifying-glass-chart w-4 text-center"></i> sdd.analyze</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_analyze_desc">Analisa o código existente para mapear contexto antes de planear novas funcionalidades.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-emerald-500/50 transition-all hover:shadow-lg hover:shadow-emerald-500/5">
+                    <div class="text-emerald-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-code w-4 text-center"></i> sdd.implement</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_impl_desc">Escreve o código final seguindo rigorosamente as tarefas, planos e especificações aprovadas.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-teal-500/50 transition-all hover:shadow-lg hover:shadow-teal-500/5">
+                    <div class="text-teal-400 font-mono text-sm font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-check-double w-4 text-center"></i> sdd.converge</div>
+                    <p class="text-xs text-slate-400" data-i18n="sub_conv_desc">Valida se o código implementado cumpre 100% os testes e especificações antes do commit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Usage in VS Code Copilot Section -->
     <section id="usage" class="py-20 bg-slate-900/50 border-t border-slate-800">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -492,6 +566,7 @@
             pt: {
                 nav_features: "Recursos",
                 nav_workflow: "Fluxo SDD",
+                nav_subagents: "Subagentes",
                 nav_usage: "No Copilot",
                 nav_install: "Instalação",
                 btn_install: "Instalar Plugin",
@@ -502,6 +577,7 @@
                 hero_btn_github: "Repositório Oficial",
                 chat_agent_active: "Agente @sdd Ativo no Copilot",
                 chat_agent_desc: "Orquestrando o fluxo SDD no workspace atual:",
+                chat_footer_tip: "💡 Dica: Basta usar o agente @sdd diretamente no chat do Copilot (Ctrl+Alt+I).",
                 feat_title: "Por que usar o SDD Agent Plugin?",
                 feat_subtitle: "Elimine o 'vibe coding' e introduza rigor de engenharia diretamente nas conversas com o GitHub Copilot.",
                 feat_1_title: "Orquestração via @sdd",
@@ -519,6 +595,21 @@
                 wf_2_desc: "Gera arquitetura técnica e contratos (salvos em `.sdd/plans/`) antes de codificar.",
                 wf_3_desc: "Divide o plano em subtarefas atômicas (salvas em `.sdd/tasks/`) otimizadas para IA.",
                 wf_4_desc: "Executa a escrita de código com validação contínua e rastreabilidade nos artefatos.",
+                subagents_kicker: "Especialistas Internos",
+                subagents_title: "A Equipe de Subagentes",
+                subagents_subtitle: "O @sdd atua como orquestrador principal, delegando tarefas para agentes especializados, garantindo rigor e foco em cada fase do ciclo.",
+                sub_const_desc: "Define as regras fundamentais, stack tecnológica e diretrizes globais do projeto.",
+                sub_spec_desc: "Cria a especificação inicial e histórias de utilizador a partir de uma ideia ou pedido.",
+                sub_clarify_desc: "Analisa a especificação em busca de ambiguidades e faz perguntas para refinar os detalhes.",
+                sub_wireflow_desc: "Analisa mockups (imagens) e gera especificações visuais detalhadas de UI/UX.",
+                sub_plan_desc: "Elabora a arquitetura técnica, contratos de API e modelação de dados antes da implementação.",
+                sub_check_desc: "Verifica as especificações e planos contra normas de segurança, performance e acessibilidade.",
+                sub_qa_desc: "Gera cenários de teste BDD (Given/When/Then) baseados nos critérios de aceitação.",
+                sub_tasks_desc: "Decompõe o plano técnico em subtarefas atómicas, fáceis de implementar e testar.",
+                sub_issues_desc: "Converte as tarefas geradas em issues diretamente no rastreador (ex: GitHub Issues).",
+                sub_analyze_desc: "Analisa o código existente para mapear contexto antes de planear novas funcionalidades.",
+                sub_impl_desc: "Escreve o código final seguindo rigorosamente as tarefas, planos e especificações aprovadas.",
+                sub_conv_desc: "Valida se o código implementado cumpre 100% os testes e especificações antes do commit.",
                 usage_kicker: "Experiência Nativa",
                 usage_title: "Como usar o agente @sdd no Copilot",
                 usage_subtitle: "Toda a interação é feita através do agente principal @sdd no painel de chat do VS Code.",
@@ -541,6 +632,7 @@
             en: {
                 nav_features: "Features",
                 nav_workflow: "SDD Workflow",
+                nav_subagents: "Subagents",
                 nav_usage: "In Copilot",
                 nav_install: "Installation",
                 btn_install: "Install Plugin",
@@ -551,6 +643,7 @@
                 hero_btn_github: "Official Repository",
                 chat_agent_active: "@sdd Agent Active in Copilot",
                 chat_agent_desc: "Orchestrating the SDD workflow in the current workspace:",
+                chat_footer_tip: "💡 Tip: Simply use the @sdd agent directly in the Copilot chat panel (Ctrl+Alt+I).",
                 feat_title: "Why use the SDD Agent Plugin?",
                 feat_subtitle: "Eliminate 'vibe coding' and introduce engineering rigor directly into GitHub Copilot chats.",
                 feat_1_title: "Orchestration via @sdd",
@@ -568,6 +661,21 @@
                 wf_2_desc: "Generate technical architecture and API contracts (saved in `.sdd/plans/`) before writing code.",
                 wf_3_desc: "Break down the plan into atomic subtasks (saved in `.sdd/tasks/`) optimized for AI.",
                 wf_4_desc: "Execute code writing with continuous validation and artifact traceability.",
+                subagents_kicker: "Internal Experts",
+                subagents_title: "The Subagent Team",
+                subagents_subtitle: "The @sdd acts as the main orchestrator, delegating tasks to specialized agents, ensuring rigor and focus in each phase.",
+                sub_const_desc: "Defines fundamental rules, technology stack, and global project guidelines.",
+                sub_spec_desc: "Creates the initial specification and user stories from an idea or request.",
+                sub_clarify_desc: "Analyzes the specification for ambiguities and asks questions to refine details.",
+                sub_wireflow_desc: "Analyzes mockups (images) and generates detailed UI/UX visual specifications.",
+                sub_plan_desc: "Drafts the technical architecture, API contracts, and data modeling before implementation.",
+                sub_check_desc: "Checks specifications and plans against security, performance, and accessibility standards.",
+                sub_qa_desc: "Generates BDD test scenarios (Given/When/Then) based on acceptance criteria.",
+                sub_tasks_desc: "Breaks down the technical plan into atomic subtasks, easy to implement and test.",
+                sub_issues_desc: "Converts generated tasks into issues directly in the tracker (e.g., GitHub Issues).",
+                sub_analyze_desc: "Analyzes existing code to map context before planning new features.",
+                sub_impl_desc: "Writes the final code strictly following the approved tasks, plans, and specifications.",
+                sub_conv_desc: "Validates if the implemented code meets 100% of the tests and specs before committing.",
                 usage_kicker: "Native Experience",
                 usage_title: "How to use the @sdd agent in Copilot",
                 usage_subtitle: "All interaction is handled through the main @sdd agent in the VS Code chat panel.",
@@ -590,6 +698,7 @@
             es: {
                 nav_features: "Características",
                 nav_workflow: "Flujo SDD",
+                nav_subagents: "Subagentes",
                 nav_usage: "En Copilot",
                 nav_install: "Instalación",
                 btn_install: "Instalar Plugin",
@@ -600,6 +709,7 @@
                 hero_btn_github: "Repositorio Oficial",
                 chat_agent_active: "Agente @sdd Activo en Copilot",
                 chat_agent_desc: "Orquestando el flujo SDD en el espacio de trabajo actual:",
+                chat_footer_tip: "💡 Consejo: Simplemente usa el agente @sdd directamente en el panel de chat de Copilot (Ctrl+Alt+I).",
                 feat_title: "¿Por qué usar el SDD Agent Plugin?",
                 feat_subtitle: "Elimina el 'vibe coding' e introduce rigor de ingeniería directamente en las charlas con GitHub Copilot.",
                 feat_1_title: "Orquestración vía @sdd",
@@ -617,6 +727,21 @@
                 wf_2_desc: "Genera arquitectura técnica y contratos de API (guardados en `.sdd/plans/`) antes de programar.",
                 wf_3_desc: "Divide el plan en subtareas atómicas (guardadas en `.sdd/tasks/`) optimizadas para IA.",
                 wf_4_desc: "Ejecuta la escritura de código con validación continua y trazabilidad.",
+                subagents_kicker: "Expertos Internos",
+                subagents_title: "El Equipo de Subagentes",
+                subagents_subtitle: "El @sdd actúa como orquestador principal, delegando tareas a agentes especializados, garantizando rigor y enfoque en cada fase.",
+                sub_const_desc: "Define las reglas fundamentales, stack tecnológico y directrices globales del proyecto.",
+                sub_spec_desc: "Crea la especificación inicial e historias de usuario a partir de una idea o petición.",
+                sub_clarify_desc: "Analiza la especificación en busca de ambigüedades y hace preguntas para refinar los detalles.",
+                sub_wireflow_desc: "Analiza mockups (imágenes) y genera especificaciones visuales detalladas de UI/UX.",
+                sub_plan_desc: "Elabora la arquitectura técnica, contratos de API y modelado de datos antes de la implementación.",
+                sub_check_desc: "Verifica las especificaciones y planes contra normas de seguridad, rendimiento y accesibilidad.",
+                sub_qa_desc: "Genera escenarios de prueba BDD (Given/When/Then) basados en los criterios de aceptación.",
+                sub_tasks_desc: "Descompone el plan técnico en subtareas atómicas, fáciles de implementar y probar.",
+                sub_issues_desc: "Convierte las tareas generadas en issues directamente en el rastreador (ej: GitHub Issues).",
+                sub_analyze_desc: "Analiza el código existente para mapear contexto antes de planificar nuevas funcionalidades.",
+                sub_impl_desc: "Escribe el código final siguiendo estrictamente las tareas, planes y especificaciones aprobadas.",
+                sub_conv_desc: "Valida si el código implementado cumple al 100% las pruebas y especificaciones antes del commit.",
                 usage_kicker: "Experiencia Nativa",
                 usage_title: "Cómo usar el agente @sdd en Copilot",
                 usage_subtitle: "Toda la interacción se gestiona a través del agente principal @sdd en el panel de chat de VS Code.",
