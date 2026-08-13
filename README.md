@@ -10,7 +10,6 @@ The **SDD Agent Plugin** is a comprehensive orchestration framework that replace
 - [The SDD Lifecycle](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-the-sdd-lifecycle)
 - [The Expert Subagents](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-the-expert-subagents-internal)
 - [Practical Examples](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-practical-examples)
-- [Traceability & Maintenance](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-traceability--maintenance)
 - [Handling UI Designs & Mockups](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-handling-ui-designs-and-mockups)
 - [Token Economy & Cost Optimization](https://github.com/airesvsg/sdd-vscode-copilot-plugin#-token-economy--cost-optimization)
 - [Installation](https://github.com/airesvsg/sdd-vscode-copilot-plugin#%EF%B8%8F-installation)
@@ -18,7 +17,6 @@ The **SDD Agent Plugin** is a comprehensive orchestration framework that replace
 ## 🌟 Key Highlights
 *   **Orchestrated Workflow:** Interact only with the lead agent `@sdd`. It delegates tasks to specialized subagents (Product Manager, Architect, QA, Implementer) that are hidden from the main menu to reduce clutter.
 *   **Vision-Powered Specs:** Drag and drop UI mockups directly into the chat. The agents analyze visual layouts to extract precise acceptance criteria.
-*   **Permanent Traceability:** Every file modified by the plugin includes a mandatory header log linking the code to its governing specifications.
 *   **Safety & Quality Gates:** Built-in loops for requirements clarification, BDD test scenario generation, and a final "Convergence" check to ensure implementation matches intent 100%.
 
 ## 🛣️ The SDD Lifecycle
@@ -57,7 +55,7 @@ These specialized agents are orchestrated by `@sdd` to handle specific domains o
 *   ⚖️ **`sdd.analyze`**: Runs a cross-artifact audit to ensure specs, plans, and tasks are perfectly aligned before coding starts.
 
 ### Phase 4: Implementation & Audit
-*   ⚙️ **`sdd.implement`**: Executes tasks autonomously using terminal and file tools, maintaining strict file traceability headers.
+*   ⚙️ **`sdd.implement`**: Executes tasks autonomously using terminal and file tools.
 *   🏁 **`sdd.converge`**: The ultimate safety net. Compares the final codebase against the spec/plan and generates fix-up tasks for any gaps.
 
 ## 🚀 Practical Examples
@@ -72,23 +70,6 @@ These specialized agents are orchestrated by `@sdd` to handle specific domains o
 *   **Step 1:** `@sdd Analyze my #codebase and create a constitution based on our existing patterns.`
 *   **Step 2:** Provide context: `@sdd Specify a new "Comment System" for our Kanban board. See #file:src/db/schema.prisma for reference.`
 *   **Step 3:** The `sdd.plan` agent will specifically look at your current files to avoid duplicating code.
-*   **Step 4:** Implementation will use **Traceability Headers** to log which spec updated which legacy file.
-
-## 🔗 Traceability & Maintenance
-
-To ensure the level of maturity required for professional SDD, the `sdd.implement` agent follows a strict **File Header Rule**. Every file created or modified will contain or append to this block:
-
-```javascript
-/* SDD - Traceability
- *
- * specs:
- *   - file: [SPEC-NAME].md
- *     changes:
- *       - timestamp: [YYYY-MM-DD HH:MM:SS]
- *         description: [DESCRIPTION OF CHANGE]
- */
-```
-This allows the `@sdd.converge` agent to always know which requirements define the current state of a file.
 
 ---
 
